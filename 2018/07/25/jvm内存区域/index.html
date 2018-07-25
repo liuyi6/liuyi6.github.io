@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="java,设计模式," />
+  <meta name="keywords" content="jvm,内存区域," />
 
 
 
@@ -79,20 +79,20 @@
 
 
 
-<meta name="description" content="设计模式的分类目前共有23种设计模式，这些模式可以分为三大类：创建型模式（Creational Patterns）、结构型模式（Structural Patterns）、行为型模式（Behavioral Patterns）。 创建型模式 - 5种这些设计模式提供了一种在创建对象的同时隐藏创建逻辑的方式，而不是使用 new 运算符直接实例化对象。这使得程序在判断针对某个给定实例需要创建哪些对象时更加">
-<meta name="keywords" content="java,设计模式">
+<meta name="description" content="Java内存区域Java虚拟机运行时数据区分为以下几个部分：方法区、虚拟机栈、本地方法栈、堆、程序计数器。如下图所示： 程序计数器程序计数器可看作当前线程所执行的字节码行号指示器，字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令。Java虚拟机的多线程是通过线程轮流切换以分配处理执行时间的方式进行的，因而为了确保线程切换后能够恢复到正确的执行位置，每条线程都有一个独立的">
+<meta name="keywords" content="jvm,内存区域">
 <meta property="og:type" content="article">
-<meta property="og:title" content="设计模式简介">
-<meta property="og:url" content="http://yoursite.com/2018/07/23/design/index.html">
+<meta property="og:title" content="深入理解jvm之Java内存区域">
+<meta property="og:url" content="http://yoursite.com/2018/07/25/jvm内存区域/index.html">
 <meta property="og:site_name" content="luis&#39;s blog">
-<meta property="og:description" content="设计模式的分类目前共有23种设计模式，这些模式可以分为三大类：创建型模式（Creational Patterns）、结构型模式（Structural Patterns）、行为型模式（Behavioral Patterns）。 创建型模式 - 5种这些设计模式提供了一种在创建对象的同时隐藏创建逻辑的方式，而不是使用 new 运算符直接实例化对象。这使得程序在判断针对某个给定实例需要创建哪些对象时更加">
+<meta property="og:description" content="Java内存区域Java虚拟机运行时数据区分为以下几个部分：方法区、虚拟机栈、本地方法栈、堆、程序计数器。如下图所示： 程序计数器程序计数器可看作当前线程所执行的字节码行号指示器，字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令。Java虚拟机的多线程是通过线程轮流切换以分配处理执行时间的方式进行的，因而为了确保线程切换后能够恢复到正确的执行位置，每条线程都有一个独立的">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://img.my.csdn.net/uploads/201209/21/1348191489_2501.jpg">
-<meta property="og:updated_time" content="2018-07-23T15:01:52.510Z">
+<meta property="og:image" content="http://yoursite.com/images/jvm_data.png">
+<meta property="og:updated_time" content="2018-07-25T12:52:29.728Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="设计模式简介">
-<meta name="twitter:description" content="设计模式的分类目前共有23种设计模式，这些模式可以分为三大类：创建型模式（Creational Patterns）、结构型模式（Structural Patterns）、行为型模式（Behavioral Patterns）。 创建型模式 - 5种这些设计模式提供了一种在创建对象的同时隐藏创建逻辑的方式，而不是使用 new 运算符直接实例化对象。这使得程序在判断针对某个给定实例需要创建哪些对象时更加">
-<meta name="twitter:image" content="http://img.my.csdn.net/uploads/201209/21/1348191489_2501.jpg">
+<meta name="twitter:title" content="深入理解jvm之Java内存区域">
+<meta name="twitter:description" content="Java内存区域Java虚拟机运行时数据区分为以下几个部分：方法区、虚拟机栈、本地方法栈、堆、程序计数器。如下图所示： 程序计数器程序计数器可看作当前线程所执行的字节码行号指示器，字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令。Java虚拟机的多线程是通过线程轮流切换以分配处理执行时间的方式进行的，因而为了确保线程切换后能够恢复到正确的执行位置，每条线程都有一个独立的">
+<meta name="twitter:image" content="http://yoursite.com/images/jvm_data.png">
 
 
 
@@ -122,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/07/23/design/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/07/25/jvm内存区域/"/>
 
 
 
 
 
-  <title>设计模式简介 | luis's blog</title>
+  <title>深入理解jvm之Java内存区域 | luis's blog</title>
   
 
 
@@ -276,7 +276,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/23/design/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/25/jvm内存区域/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="luis">
@@ -293,7 +293,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">设计模式简介</h1>
+          <h1 class="post-title" itemprop="name headline">深入理解jvm之Java内存区域</h1>
         
 
         <div class="post-meta">
@@ -305,8 +305,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-23T17:26:19+08:00">
-                2018-07-23
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-25T16:26:19+08:00">
+                2018-07-25
               </time>
             
 
@@ -328,8 +328,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
+                  <a href="/categories/jvm/" itemprop="url" rel="index">
+                    <span itemprop="name">jvm</span>
                   </a>
                 </span>
 
@@ -365,68 +365,19 @@
       
 
       
-        <h1 id="设计模式的分类"><a href="#设计模式的分类" class="headerlink" title="设计模式的分类"></a>设计模式的分类</h1><p>目前共有23种设计模式，这些模式可以分为三大类：创建型模式（Creational Patterns）、结构型模式（Structural Patterns）、行为型模式（Behavioral Patterns）。</p>
-<h2 id="创建型模式-5种"><a href="#创建型模式-5种" class="headerlink" title="创建型模式 - 5种"></a>创建型模式 - 5种</h2><p>这些设计模式提供了一种在创建对象的同时隐藏创建逻辑的方式，而不是使用 new 运算符直接实例化对象。这使得程序在判断针对某个给定实例需要创建哪些对象时更加灵活。</p>
-<ul>
-<li>工厂模式（Factory Pattern）</li>
-<li>抽象工厂模式（Abstract Factory Pattern）</li>
-<li>单例模式（Singleton Pattern）</li>
-<li>建造者模式（Builder Pattern）</li>
-<li>原型模式（Prototype Pattern）</li>
-</ul>
-<h2 id="结构型模式-8种"><a href="#结构型模式-8种" class="headerlink" title="结构型模式 - 8种"></a>结构型模式 - 8种</h2><p>这些设计模式关注类和对象的组合。继承的概念被用来组合接口和定义组合对象获得新功能的方式。</p>
-<ul>
-<li>适配器模式（Adapter Pattern）</li>
-<li>桥接模式（Bridge Pattern）</li>
-<li>过滤器模式（Filter、Criteria Pattern）</li>
-<li>组合模式（Composite Pattern）</li>
-<li>装饰器模式（Decorator Pattern）</li>
-<li>外观模式（Facade Pattern）</li>
-<li>享元模式（Flyweight Pattern）</li>
-<li>代理模式（Proxy Pattern）</li>
-</ul>
-<h2 id="行为型模式-12种"><a href="#行为型模式-12种" class="headerlink" title="行为型模式 - 12种"></a>行为型模式 - 12种</h2><p>这些设计模式特别关注对象之间的通信。</p>
-<ul>
-<li>责任链模式（Chain of Responsibility Pattern）</li>
-<li>命令模式（Command Pattern）</li>
-<li>解释器模式（Interpreter Pattern）</li>
-<li>迭代器模式（Iterator Pattern）</li>
-<li>中介者模式（Mediator Pattern）</li>
-<li>备忘录模式（Memento Pattern）</li>
-<li>观察者模式（Observer Pattern）</li>
-<li>状态模式（State Pattern）</li>
-<li>空对象模式（Null Object Pattern）</li>
-<li>策略模式（Strategy Pattern）</li>
-<li>模板模式（Template Pattern）</li>
-<li>访问者模式（Visitor Pattern）</li>
-</ul>
-<h2 id="J2EE模式-8种"><a href="#J2EE模式-8种" class="headerlink" title="J2EE模式 - 8种"></a>J2EE模式 - 8种</h2><p>这些设计模式特别关注表示层。这些模式是由 Sun Java Center 鉴定的。</p>
-<ul>
-<li>MVC 模式（MVC Pattern）</li>
-<li>业务代表模式（Business Delegate Pattern）</li>
-<li>组合实体模式（Composite Entity Pattern）</li>
-<li>数据访问对象模式（Data Access Object Pattern）</li>
-<li>前端控制器模式（Front Controller Pattern）</li>
-<li>拦截过滤器模式（Intercepting Filter Pattern）</li>
-<li>服务定位器模式（Service Locator Pattern）</li>
-<li>传输对象模式（Transfer Object Pattern）</li>
-</ul>
-<p>可以用下图描述设计模式之间的关系：<br><img src="http://img.my.csdn.net/uploads/201209/21/1348191489_2501.jpg" alt="设计模式之间的关系"></p>
-<h1 id="设计模式的六大原则"><a href="#设计模式的六大原则" class="headerlink" title="设计模式的六大原则"></a>设计模式的六大原则</h1><ol>
-<li><p>开闭原则（Open Close Principle）<br>开闭原则的意思是：对扩展开放，对修改关闭。在程序需要进行拓展的时候，不能去修改原有的代码，实现一个热插拔的效果。简言之，是为了使程序的扩展性好，易于维护和升级。想要达到这样的效果，我们需要使用接口和抽象类，后面的具体设计中我们会提到这点。</p>
-</li>
-<li><p>里氏代换原则（Liskov Substitution Principle）<br>里氏代换原则是面向对象设计的基本原则之一。 里氏代换原则中说，任何基类可以出现的地方，子类一定可以出现。LSP 是继承复用的基石，只有当派生类可以替换掉基类，且软件单位的功能不受到影响时，基类才能真正被复用，而派生类也能够在基类的基础上增加新的行为。里氏代换原则是对开闭原则的补充。实现开闭原则的关键步骤就是抽象化，而基类与子类的继承关系就是抽象化的具体实现，所以里氏代换原则是对实现抽象化的具体步骤的规范。</p>
-</li>
-<li><p>依赖倒转原则（Dependence Inversion Principle）<br>这个原则是开闭原则的基础，具体内容：针对接口编程，依赖于抽象而不依赖于具体。</p>
-</li>
-<li><p>接口隔离原则（Interface Segregation Principle）<br>这个原则的意思是：使用多个隔离的接口，比使用单个接口要好。它还有另外一个意思是：降低类之间的耦合度。由此可见，其实设计模式就是从大型软件架构出发、便于升级和维护的软件设计思想，它强调降低依赖，降低耦合。</p>
-</li>
-<li><p>迪米特法则，又称最少知道原则（Demeter Principle）<br>最少知道原则是指：一个实体应当尽量少地与其他实体之间发生相互作用，使得系统功能模块相对独立。</p>
-</li>
-<li><p>合成复用原则（Composite Reuse Principle）<br>合成复用原则是指：尽量使用合成/聚合的方式，而不是使用继承。</p>
-</li>
+        <h1 id="Java内存区域"><a href="#Java内存区域" class="headerlink" title="Java内存区域"></a>Java内存区域</h1><p>Java虚拟机运行时数据区分为以下几个部分：<br>方法区、虚拟机栈、本地方法栈、堆、程序计数器。如下图所示：<br><img src="/images/jvm_data.png" alt="运行时数据区域"></p>
+<h2 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h2><p>程序计数器可看作当前线程所执行的字节码行号指示器，字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令。Java虚拟机的多线程是通过线程轮流切换以分配处理执行时间的方式进行的，因而为了确保线程切换后能够恢复到正确的执行位置，每条线程都有一个独立的程序计数器，各个线程计数器独立存储，互不影响，这类内存区域称为“线程私有”内存。当线程执行Java方法时，计数器记录的时正在执行虚拟机字节码指令的地址；如果执行Native方法，则计数器值为空(Undefine)。<br><strong>程序计数器时唯一一个在Java虚拟机规范中没有任何规定OutOfMemoryError情况的内存区域。</strong></p>
+<h2 id="Java虚拟机栈"><a href="#Java虚拟机栈" class="headerlink" title="Java虚拟机栈"></a>Java虚拟机栈</h2><p>Java虚拟机栈也是线程私有的，生命周期与线程相同。Java虚拟机栈是描述Java方法执行的内存模型：每个方法执行时都会创建一个栈帧(方法运行期间的基础数据结构)，方法的执行过程对应着相应的栈帧在虚拟机中从入栈到出栈的过程。我们平时提到的栈就是虚拟机栈，也称为局部变量表部分。<br>局部变量表存放了编译期间的各种基本数据类型、对象引用和returAdress类型。其中，double和long占两个局部变量空间(Slot)，其余数据类型占据一个。局部变量表所需内存是在编译期间完成分配的，当进入一个方法时，方法在帧中分配的局部变量空间大小是完全确定的，在方法运行期间局部变量表的大小不变。<br>Java虚拟机栈规定了两种异常状况：</p>
+<ol>
+<li>线程请求栈深度大于虚拟机所允许的深度，抛出StackOverflowError异常。</li>
+<li>虚拟机栈可以动态扩展，当扩展时无法申请到足够的内存时抛出OutOfMemoryError异常。</li>
 </ol>
-<p>此文参考自：<a href="http://www.runoob.com/design-pattern/design-pattern-intro.html" target="_blank" rel="noopener">http://www.runoob.com/design-pattern/design-pattern-intro.html</a></p>
+<h2 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h2><p>本地方法栈为虚拟机使用的Native方法服务，本地方法栈可根据虚拟机的具体要求自由实现。由的虚拟机(如Sun HotSpot虚拟机)直接将本地方法栈和虚拟机栈赫尔为一。<br>本地方法栈出现的异常为StackOverflowError和OutOfMemoryError异常。</p>
+<h2 id="Java堆"><a href="#Java堆" class="headerlink" title="Java堆"></a>Java堆</h2><p>Java堆(Java Heap)是Java虚拟机内存中最大的一块。堆被所有线程共享，在虚拟机启动时创建。堆的唯一目的就是存放对象实例。一般来说，几乎所有的对象实例都在堆上分配内存。<br>Java堆是垃圾收集器管理的主要区域，因此又称为“GC堆”。(为什么莫名想到垃圾堆？)从内存回收角度由于收集器采用分代收集算法，故将Java堆细分为新生代，老生代；从内存分配角度将线程共享的堆划分为多个线程私有分配缓冲区。<br>Java堆处于物理不连接的内存空间中，只要逻辑上连续即可。如果堆中没有内存完成实例分配，且堆无法再扩展时抛出OutOfMemoryError异常。</p>
+<h2 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h2><p>方法区也是线程共享的内存区域，它用于存储已被虚拟机加载的类信息、常量、静态变量、即时候编译器编译后的代码等数据。Java虚拟机规范将方法区描述为堆的一个逻辑部分，但为与java堆进行区分，称它为Non-Heap(非堆)。由于HotSpot虚拟机用永久代来实现方法区，因而部分人习惯将方法区称为“永久代”。垃圾回收在方法区是较少出现的，这个区域内存回收主要目标是对常量池的回收和对类型的卸载。当方法区无法满足内存分配需求时，将抛出OutOfMemoryError异常。</p>
+<h2 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h2><p>运行时常量池是方法区的一部分，常量池是包含在Class文件中的一项信息，用于存放编译期生成的各种自面量和符号引用，这部分信息将在类加载后存放到方法区的运行时常量池中。一般来说，除了保存Class文件中的符号引用外，还会把翻译出来的直接引用也存储在运行时常量池中。<br>运行时常量池与Class文件常量池相比具有动态性，并非时只有预置在Class文件中的常量池内容才能进入运行时常量池，运行期间也可以将新的常量放入池中，如String的intern()方法。当常量池无法再申请到内存时抛出OutOfMemoryError异常。</p>
+<h2 id="直接内存"><a href="#直接内存" class="headerlink" title="直接内存"></a>直接内存</h2><p>直接内存并不是虚拟机运行时数据区的一部分，但这部分内存被频繁的使用，也会OutOfMemoryError异常的出现。<br>JDK1.4加入Input/Output类,引入基于通道(Channel)与缓冲区(Buffer)的I/O方式，它可以使用Native函数库直接分配堆外内存，再通过Java堆中的DirectByteBuffer对象引用这块内存，以提高性能。它一般受到本机总内存与处理器寻址空间的限制，从而导致OutOfMemoryError异常。</p>
+<p>本文主要参考《深入理解Java虚拟机——JVM高级特性与最佳实践》一书<br>另参考文章:<br><a href="https://blog.csdn.net/u011116672/article/details/50994109" target="_blank" rel="noopener">https://blog.csdn.net/u011116672/article/details/50994109</a></p>
 
       
     </div>
@@ -444,9 +395,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/java/" rel="tag"><i class="fa fa-tag"></i> java</a>
+            <a href="/tags/jvm/" rel="tag"><i class="fa fa-tag"></i> jvm</a>
           
-            <a href="/tags/设计模式/" rel="tag"><i class="fa fa-tag"></i> 设计模式</a>
+            <a href="/tags/内存区域/" rel="tag"><i class="fa fa-tag"></i> 内存区域</a>
           
         </div>
       
@@ -459,14 +410,18 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2018/07/24/springboot建项目/" rel="next" title="搭建springboot项目">
+                <i class="fa fa-chevron-left"></i> 搭建springboot项目
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/07/24/springboot建项目/" rel="prev" title="搭建springboot项目">
-                搭建springboot项目 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/07/25/策略模式/" rel="prev" title="设计模式之测略模式">
+                设计模式之测略模式 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -548,7 +503,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -559,7 +514,7 @@
               
               <div class="site-state-item site-state-categories">
                 
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">分类</span>
                 
               </div>
@@ -570,7 +525,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">标签</span>
                 
               </div>
@@ -619,7 +574,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#设计模式的分类"><span class="nav-number">1.</span> <span class="nav-text">设计模式的分类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建型模式-5种"><span class="nav-number">1.1.</span> <span class="nav-text">创建型模式 - 5种</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结构型模式-8种"><span class="nav-number">1.2.</span> <span class="nav-text">结构型模式 - 8种</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行为型模式-12种"><span class="nav-number">1.3.</span> <span class="nav-text">行为型模式 - 12种</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#J2EE模式-8种"><span class="nav-number">1.4.</span> <span class="nav-text">J2EE模式 - 8种</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#设计模式的六大原则"><span class="nav-number">2.</span> <span class="nav-text">设计模式的六大原则</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java内存区域"><span class="nav-number">1.</span> <span class="nav-text">Java内存区域</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#程序计数器"><span class="nav-number">1.1.</span> <span class="nav-text">程序计数器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java虚拟机栈"><span class="nav-number">1.2.</span> <span class="nav-text">Java虚拟机栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本地方法栈"><span class="nav-number">1.3.</span> <span class="nav-text">本地方法栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java堆"><span class="nav-number">1.4.</span> <span class="nav-text">Java堆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法区"><span class="nav-number">1.5.</span> <span class="nav-text">方法区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行时常量池"><span class="nav-number">1.6.</span> <span class="nav-text">运行时常量池</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#直接内存"><span class="nav-number">1.7.</span> <span class="nav-text">直接内存</span></a></li></ol></li></ol></div>
             
 
           </div>
