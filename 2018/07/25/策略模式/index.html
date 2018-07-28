@@ -579,6 +579,9 @@ public class Squeak implents quackBehavior{
           
 
   
+	<div id="gitalk-container"></div>
+ 
+  
 
 
 
@@ -910,6 +913,21 @@ public class Squeak implents quackBehavior{
 
 
 
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: '480fe6b918bc64792962',
+          clientSecret: 'b49cd795153c0b3600f9364e377d4963571a85b5',
+          repo: 'liuyi6.github.io',
+          owner: 'liuyi6',
+          admin: ['liuyi6'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
 
   
 
