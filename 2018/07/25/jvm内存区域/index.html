@@ -87,12 +87,12 @@
 <meta property="og:site_name" content="luis&#39;s blog">
 <meta property="og:description" content="Java虚拟机运行时数据区分为以下几个部分：方法区、虚拟机栈、本地方法栈、堆、程序计数器。如下图所示： 程序计数器程序计数器可看作当前线程所执行的字节码行号指示器，字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令。Java虚拟机的多线程是通过线程轮流切换以分配处理执行时间的方式进行的，因而为了确保线程切换后能够恢复到正确的执行位置，每条线程都有一个独立的程序计数器，各个">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/jvm_data.png">
-<meta property="og:updated_time" content="2018-07-27T15:08:54.324Z">
+<meta property="og:image" content="http://yoursite.com/images/2018-7-31/jvm_data.png">
+<meta property="og:updated_time" content="2018-08-01T13:39:00.344Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解jvm之Java内存区域">
 <meta name="twitter:description" content="Java虚拟机运行时数据区分为以下几个部分：方法区、虚拟机栈、本地方法栈、堆、程序计数器。如下图所示： 程序计数器程序计数器可看作当前线程所执行的字节码行号指示器，字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令。Java虚拟机的多线程是通过线程轮流切换以分配处理执行时间的方式进行的，因而为了确保线程切换后能够恢复到正确的执行位置，每条线程都有一个独立的程序计数器，各个">
-<meta name="twitter:image" content="http://yoursite.com/images/jvm_data.png">
+<meta name="twitter:image" content="http://yoursite.com/images/2018-7-31/jvm_data.png">
 
 
 
@@ -392,7 +392,7 @@
       
 
       
-        <p>Java虚拟机运行时数据区分为以下几个部分：<br>方法区、虚拟机栈、本地方法栈、堆、程序计数器。如下图所示：<br><img src="/images/jvm_data.png" alt="运行时数据区域"></p>
+        <p>Java虚拟机运行时数据区分为以下几个部分：<br>方法区、虚拟机栈、本地方法栈、堆、程序计数器。如下图所示：<br><img src="/images/2018-7-31/jvm_data.png" alt="运行时数据区域"></p>
 <h2 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h2><p>程序计数器可看作当前线程所执行的字节码行号指示器，字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令。Java虚拟机的多线程是通过线程轮流切换以分配处理执行时间的方式进行的，因而为了确保线程切换后能够恢复到正确的执行位置，每条线程都有一个独立的程序计数器，各个线程计数器独立存储，互不影响，这类内存区域称为“线程私有”内存。当线程执行Java方法时，计数器记录的时正在执行虚拟机字节码指令的地址；如果执行Native方法，则计数器值为空(Undefine)。<br><strong>程序计数器时唯一一个在Java虚拟机规范中没有任何规定OutOfMemoryError情况的内存区域。</strong></p>
 <h2 id="Java虚拟机栈"><a href="#Java虚拟机栈" class="headerlink" title="Java虚拟机栈"></a>Java虚拟机栈</h2><p>Java虚拟机栈也是线程私有的，生命周期与线程相同。Java虚拟机栈是描述Java方法执行的内存模型：每个方法执行时都会创建一个栈帧(方法运行期间的基础数据结构)，方法的执行过程对应着相应的栈帧在虚拟机中从入栈到出栈的过程。我们平时提到的栈就是虚拟机栈，也称为局部变量表部分。<br>局部变量表存放了编译期间的各种基本数据类型、对象引用和returAdress类型。其中，double和long占两个局部变量空间(Slot)，其余数据类型占据一个。局部变量表所需内存是在编译期间完成分配的，当进入一个方法时，方法在帧中分配的局部变量空间大小是完全确定的，在方法运行期间局部变量表的大小不变。<br>Java虚拟机栈规定了两种异常状况：</p>
 <ol>

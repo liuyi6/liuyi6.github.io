@@ -87,16 +87,16 @@
 <meta property="og:site_name" content="luis&#39;s blog">
 <meta property="og:description" content="前言最近在读《Head First设计模式》一书，为加强记忆及便于日后查阅，在博客将自己的学习过程进行记录。谨以本篇策略模式作为自己博客的开篇章，并在后续过程中不断丰富自己的博客内容，欢迎各位进行浏览。另由于个人水平有限，博客内容难免有不当之处，欢迎各位进行批评指正。 问题现有一游戏SimDuck，游戏采用OO技术开发，其中会出现各种各样的鸭子，可以一边游泳一边呱呱叫。现在要对游戏内容进行丰富，使">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/strategy_change.png">
-<meta property="og:image" content="http://yoursite.com/images/strategy_consider.png">
-<meta property="og:image" content="http://yoursite.com/images/strategy_devidchange.png">
-<meta property="og:image" content="http://yoursite.com/images/strategy_designInterface.png">
-<meta property="og:image" content="http://yoursite.com/images/strategy_starge.png">
-<meta property="og:updated_time" content="2018-07-25T14:47:54.101Z">
+<meta property="og:image" content="http://yoursite.com/images/2018-7-31/strategy_change.png">
+<meta property="og:image" content="http://yoursite.com/images/2018-7-31/strategy_consider.png">
+<meta property="og:image" content="http://yoursite.com/images/2018-7-31/strategy_devidchange.png">
+<meta property="og:image" content="http://yoursite.com/images/2018-7-31/strategy_designInterface.png">
+<meta property="og:image" content="http://yoursite.com/images/2018-7-31/strategy_starge.png">
+<meta property="og:updated_time" content="2018-08-01T13:39:38.930Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="设计模式之测略模式">
 <meta name="twitter:description" content="前言最近在读《Head First设计模式》一书，为加强记忆及便于日后查阅，在博客将自己的学习过程进行记录。谨以本篇策略模式作为自己博客的开篇章，并在后续过程中不断丰富自己的博客内容，欢迎各位进行浏览。另由于个人水平有限，博客内容难免有不当之处，欢迎各位进行批评指正。 问题现有一游戏SimDuck，游戏采用OO技术开发，其中会出现各种各样的鸭子，可以一边游泳一边呱呱叫。现在要对游戏内容进行丰富，使">
-<meta name="twitter:image" content="http://yoursite.com/images/strategy_change.png">
+<meta name="twitter:image" content="http://yoursite.com/images/2018-7-31/strategy_change.png">
 
 
 
@@ -399,7 +399,7 @@
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近在读《Head First设计模式》一书，为加强记忆及便于日后查阅，在博客将自己的学习过程进行记录。谨以本篇策略模式作为自己博客的开篇章，并在后续过程中不断丰富自己的博客内容，欢迎各位进行浏览。另由于个人水平有限，博客内容难免有不当之处，欢迎各位进行批评指正。</p>
 <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>现有一游戏SimDuck，游戏采用OO技术开发，其中会出现各种各样的鸭子，可以一边游泳一边呱呱叫。现在要对游戏内容进行丰富，使得鸭子能够飞起来。</p>
 <h2 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h2><p><strong>思路1：继承</strong><br>在Duck父方法中加入fly()方法，简单快捷的实现鸭子的飞行</p>
-<p><img src="/images/strategy_change.png" width="500" height="300"><br>存在问题：<br>若加入塑料橡皮鸭，木头诱饵鸭，继承Duck类之后，会出现橡皮鸭、诱饵鸭飞行的闹剧，因而在父类中加入fly()方法的思路不可行。<br><strong>思路2：改进继承</strong><br><img src="/images/strategy_consider.png" alt="改进的继承"><br>Flyable与Quackable虽然解决了一些问题，但却造成代码无法复用，若有上百个鸭子类，每个都要修改飞行类，这简直就是一个噩梦。因而，我们要考虑其他的实现思路.<br><strong>思路3：策略模式实现</strong><br>接下来我们就用策略模式的方式实现SimDuck的需求。<br>由上面分析可知，鸭子的quack()行为有“呱呱”、“吱吱”…… fly()行为有能自己飞的、不能飞的、依靠外力飞的…… 因而选择将这些不同的部分拿出来，建一组新类代表每个行为。<br><img src="/images/strategy_devidchange.png" alt="拿出不同"><br>在设计这些行为类的过程中，我们想要鸭子的行为可以动态的改变，并得到指定行为的鸭子实例。因而我们选择使用接口的方式构建鸭子行为，类图如下所示：<br><img src="/images/strategy_designInterface.png" alt="设置接口"><br>这样的设计，可以让飞行与和呱呱叫的动作被其他对象复用，同时可以在新增行为的过程中，不会影响到既有的行为类，这样就有了继承的“复用”好处，却又没有继承带来的麻烦。<br>整合鸭子的行为<br>在Duck类中“加入两个实力变量”，分别为flyBehavior和quackBehavior,声明为接口类型，每个鸭子对象都会动态的设置变量以在运行时引用正确的行为类型。<br>Dack类代码如下所示：</p>
+<p><img src="/images/2018-7-31/strategy_change.png" width="500" height="300"><br>存在问题：<br>若加入塑料橡皮鸭，木头诱饵鸭，继承Duck类之后，会出现橡皮鸭、诱饵鸭飞行的闹剧，因而在父类中加入fly()方法的思路不可行。<br><strong>思路2：改进继承</strong><br><img src="/images/2018-7-31/strategy_consider.png" alt="改进的继承"><br>Flyable与Quackable虽然解决了一些问题，但却造成代码无法复用，若有上百个鸭子类，每个都要修改飞行类，这简直就是一个噩梦。因而，我们要考虑其他的实现思路.<br><strong>思路3：策略模式实现</strong><br>接下来我们就用策略模式的方式实现SimDuck的需求。<br>由上面分析可知，鸭子的quack()行为有“呱呱”、“吱吱”…… fly()行为有能自己飞的、不能飞的、依靠外力飞的…… 因而选择将这些不同的部分拿出来，建一组新类代表每个行为。<br><img src="/images/2018-7-31/strategy_devidchange.png" alt="拿出不同"><br>在设计这些行为类的过程中，我们想要鸭子的行为可以动态的改变，并得到指定行为的鸭子实例。因而我们选择使用接口的方式构建鸭子行为，类图如下所示：<br><img src="/images/2018-7-31/strategy_designInterface.png" alt="设置接口"><br>这样的设计，可以让飞行与和呱呱叫的动作被其他对象复用，同时可以在新增行为的过程中，不会影响到既有的行为类，这样就有了继承的“复用”好处，却又没有继承带来的麻烦。<br>整合鸭子的行为<br>在Duck类中“加入两个实力变量”，分别为flyBehavior和quackBehavior,声明为接口类型，每个鸭子对象都会动态的设置变量以在运行时引用正确的行为类型。<br>Dack类代码如下所示：</p>
 <pre><code>public class Duck {
     QuackBehavior quackBehavior;
     FlyBehavior flyBehavior;
@@ -491,7 +491,7 @@ public class Squeak implents quackBehavior{
         model.performFly();
     }
 }
-</code></pre><p>至此，我们已经完成了鸭子模拟器的设计，我们看一下整体的类结构，如下图所示：<br><img src="/images/strategy_starge.png" alt="最终结果"></p>
+</code></pre><p>至此，我们已经完成了鸭子模拟器的设计，我们看一下整体的类结构，如下图所示：<br><img src="/images/2018-7-31/strategy_starge.png" alt="最终结果"></p>
 <p><strong>策略模式定义了算法族，各个算法族分别封装起来，每个算法族内的类可以相互替换，使得算法的变化独立于算法使用者。</strong></p>
 <h2 id="设计原则"><a href="#设计原则" class="headerlink" title="设计原则"></a>设计原则</h2><p>在上面的过程中，我们发现前两种思路存在缺点，而走在我们前面的优秀程序员们就针对这些缺点总结了相应的软件设计原则：<br><strong>设计原则一：分开变化与不变化</strong><br>即，找出应用中可能需要变化之处，把它们独立出来，不要和那些不需要变化的代码混在一起。这个原则几乎是每个设计模式背后的精神所在，所有的模式都提供了一套方法让系统中的某部分改变不会影响其它部分。将会变化的部分封装起来，以后可以轻易的针对此部分进行改动或扩充，不影响其他部分。在SimDuck设计过程中我们将变化的fly与quack独立出来，使得整个系统变得更有弹性。<br><strong>设计原则之二：针对接口编程而不是针对实现编程</strong><br>在SimDuck原有的设计中，行为来自Duck父类的具体实现，或由子类继承接口后自行实现。这两种做法都是依赖于实现编程。在策略模式实现中我们将行为写在实现FlyBehavior和QuackBehavior的类中。<br>针对接口编程的关键在于多态，利用多态，程序员可以实现针对超类型编程，执行时根据实际状况执行真正的行为。“针对超类型编程”可以更加准确的说为变量的声明类型应为超类型，通常为一个抽象类或接口，故只要具体实现次超类型的类所产生的对象，都可以指定给这个变量。即声明类时可以不用理会以后执行的真正的对象类型。<br><strong>设计原则之三：多用组合，少用继承</strong><br>使用组合建立系统具有很大的弹性，不仅可将算法族封装成类，更可以在运行时动态地改变行为，只要组合的对象符合正确的额接口标准即可。</p>
 <h2 id="策略模式总结"><a href="#策略模式总结" class="headerlink" title="策略模式总结"></a>策略模式总结</h2><p><strong>使用方式</strong><br>一个系统有许多类，区分它们的只是他们直接的行为，在这种情况下，定义算法族,把它们封装成实现同一个接口的类, 使它们可相互替换。<br><strong>使用场景</strong><br>1、如果在一个系统里面有许多类，它们之间的区别仅在于它们的行为，那么使用策略模式可以动态地让一个对象在许多行为中选择一种行为。<br>2、一个系统需要动态地在几种算法中选择一种。<br>3、如果一个对象有很多的行为，如果不用恰当的模式，这些行为就只好使用多重的条件选择语句来实现。<br><strong>策略模式的优缺点</strong><br>策略模式的优点：</p>
