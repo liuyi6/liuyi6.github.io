@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="RabbitMQ," />
 
 
 
@@ -79,16 +79,32 @@
 
 
 
-<meta name="description" content="养得深根，才能枝繁叶茂">
-<meta property="og:type" content="website">
-<meta property="og:title" content="luis&#39;s blog">
-<meta property="og:url" content="http://yoursite.com/archives/index.html">
+<meta name="description" content="最近几天在学习Spring Cloud，在学习Spring Cloud Config配置刷新使用Spring Cloud Bus时，其中用到消息代理组件RabbitMQ,在安装RabbitMQ的过程查了很多资料，因此在这里将安装过程记录下来。 安装Erlang由于RabbitMQ服务端代码是使用并发式语言erlang编写的，所以首先要安装erlang环境。Erlang下载 下载地址是：http:/">
+<meta name="keywords" content="RabbitMQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RabbitMQ安装教程">
+<meta property="og:url" content="http://yoursite.com/2018/08/01/RibbitMq/index.html">
 <meta property="og:site_name" content="luis&#39;s blog">
-<meta property="og:description" content="养得深根，才能枝繁叶茂">
+<meta property="og:description" content="最近几天在学习Spring Cloud，在学习Spring Cloud Config配置刷新使用Spring Cloud Bus时，其中用到消息代理组件RabbitMQ,在安装RabbitMQ的过程查了很多资料，因此在这里将安装过程记录下来。 安装Erlang由于RabbitMQ服务端代码是使用并发式语言erlang编写的，所以首先要安装erlang环境。Erlang下载 下载地址是：http:/">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/2018-8-1/otp_download.png">
+<meta property="og:image" content="http://yoursite.com/images/2018-8-1/otp_start.png">
+<meta property="og:image" content="http://yoursite.com/images/2018-8-1/otp_c_install.png">
+<meta property="og:image" content="http://yoursite.com/images/2018-8-1/erlang_home.png">
+<meta property="og:image" content="http://yoursite.com/images/2018-8-1/erlang_path.png">
+<meta property="og:image" content="http://yoursite.com/images/2018-8-1/cmd_success.png">
+<meta property="og:image" content="http://yoursite.com/images/2018-8-1/rabbit_download.png">
+<meta property="og:image" content="http://yoursite.com/images/2018-8-1/rabbitMQ_install.png">
+<meta property="og:image" content="http://yoursite.com/images/2018-8-1/rabbitmq_in.png">
+<meta property="og:image" content="http://yoursite.com/images/2018-8-1/rabbitmq_plugin.png">
+<meta property="og:image" content="http://yoursite.com/images/2018-8-1/rabbitmq_pligins_error.png">
+<meta property="og:image" content="http://yoursite.com/images/2018-8-1/rabbitmq_test.png">
+<meta property="og:image" content="http://yoursite.com/images/2018-8-1/rabbitmq_pligins_success.png">
+<meta property="og:updated_time" content="2018-08-02T12:20:12.220Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="luis&#39;s blog">
-<meta name="twitter:description" content="养得深根，才能枝繁叶茂">
+<meta name="twitter:title" content="RabbitMQ安装教程">
+<meta name="twitter:description" content="最近几天在学习Spring Cloud，在学习Spring Cloud Config配置刷新使用Spring Cloud Bus时，其中用到消息代理组件RabbitMQ,在安装RabbitMQ的过程查了很多资料，因此在这里将安装过程记录下来。 安装Erlang由于RabbitMQ服务端代码是使用并发式语言erlang编写的，所以首先要安装erlang环境。Erlang下载 下载地址是：http:/">
+<meta name="twitter:image" content="http://yoursite.com/images/2018-8-1/otp_download.png">
 
 
 
@@ -118,13 +134,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/archives/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/08/01/RibbitMq/"/>
 
 
 
 
 
-  <title>归档 | luis's blog</title>
+  <title>RabbitMQ安装教程 | luis's blog</title>
   
 
 
@@ -144,7 +160,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 	<a href="https://github.com/liuyi6"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
 
@@ -273,259 +289,205 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-      <span class="archive-page-counter">
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/01/RibbitMq/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="luis">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/blog-logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luis's blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
+          <h1 class="post-title" itemprop="name headline">RabbitMQ安装教程</h1>
         
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-01T14:13:19+08:00">
+                2018-08-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-        
-        嗯..! 目前共计 6 篇日志。 继续努力。
-      </span>
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/教程/" itemprop="url" rel="index">
+                    <span itemprop="name">教程</span>
+                  </a>
+                </span>
 
-      
-
-        
-        
-        
-
-        
+                
+                
+              
+            </span>
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2018">2018</h1>
-          </div>
-        
-        
 
-        
+          
+            
+          
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+          
+          
+             <span id="/2018/08/01/RibbitMq/" class="leancloud_visitors" data-flag-title="RabbitMQ安装教程">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+				 <span>次</span>
+             </span>
+          
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/02/springboot/" itemprop="url">
-              
-                <span itemprop="name">springboot入门</span>
-              
-            </a>
-        
-      </h2>
+          
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-08-02T16:13:19+08:00"
-              content="2018-08-02" >
-          08-02
-        </time>
-      </div>
+          
 
-    </header>
-  </article>
+          
 
+        </div>
+      </header>
+    
 
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/02/mysql问题解决/" itemprop="url">
-              
-                <span itemprop="name">安装mysql出现no compatible servers were found</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-08-02T14:13:19+08:00"
-              content="2018-08-02" >
-          08-02
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/01/RibbitMq/" itemprop="url">
-              
-                <span itemprop="name">RabbitMQ安装教程</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-08-01T14:13:19+08:00"
-              content="2018-08-01" >
-          08-01
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/07/27/GCoverview/" itemprop="url">
-              
-                <span itemprop="name">垃圾收集概述</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-07-27T14:13:19+08:00"
-              content="2018-07-27" >
-          07-27
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+      
+        <p>最近几天在学习Spring Cloud，在学习Spring Cloud Config配置刷新使用Spring Cloud Bus时，其中用到消息代理组件RabbitMQ,在安装RabbitMQ的过程查了很多资料，因此在这里将安装过程记录下来。</p>
+<h2 id="安装Erlang"><a href="#安装Erlang" class="headerlink" title="安装Erlang"></a>安装Erlang</h2><p>由于RabbitMQ服务端代码是使用并发式语言erlang编写的，所以首先要安装erlang环境。<br><strong>Erlang下载</strong></p>
+<p>下载地址是：<a href="http://www.erlang.org/downloads" target="_blank" rel="noopener">http://www.erlang.org/downloads</a><br>我的测试环境是windows所以下载的是<a href="http://erlang.org/download/otp_win64_20.2.exe" target="_blank" rel="noopener">OTP 20.2 Windows 64-bit Binary File</a><br><img src="/images/2018-8-1/otp_download.png" alt=""><br><strong>Erlang安装</strong></p>
+<p>下载完成后进行安装，可以按照习惯更改安装目录，在此过程中可能遇到安装Visual c++ 的情况不用管，一直点同意，等待安装完成。如下图所示：<br><img src="/images/2018-8-1/otp_start.png" alt=""><br><img src="/images/2018-8-1/otp_c_install.png" alt=""><br><strong>Erlang配置环境变量</strong></p>
+<p>Erlang环境变量配置如下图所示：<br><img src="/images/2018-8-1/erlang_home.png" alt=""><br><img src="/images/2018-8-1/erlang_path.png" alt=""><br>环境变量配置完毕，可以打开cmd进行测试，输入命令：erl<br>若出现如下图的结果，则环境变量配置成功<br><img src="/images/2018-8-1/cmd_success.png" alt=""></p>
+<h2 id="安装RabbitMQ"><a href="#安装RabbitMQ" class="headerlink" title="安装RabbitMQ"></a>安装RabbitMQ</h2><p>RabbitMQ下载地址：<a href="http://www.rabbitmq.com/download.html" target="_blank" rel="noopener">http://www.rabbitmq.com/download.html</a><br><img src="/images/2018-8-1/rabbit_download.png" alt=""><br>下载完成后安装，可选择安装位置，如图所示<br><img src="/images/2018-8-1/rabbitMQ_install.png" alt=""><br><img src="/images/2018-8-1/rabbitmq_in.png" alt=""></p>
+<h2 id="安装RabbitMQ-Plugins"><a href="#安装RabbitMQ-Plugins" class="headerlink" title="安装RabbitMQ-Plugins"></a>安装RabbitMQ-Plugins</h2><p>RabbitMQ-Plugins是一个管理界面，方便我们在浏览器界面查看RabbitMQ各个消息队列以及exchange的工作情况。<br>打开命令行cd进入rabbitmq的sbin目录(我的目录是：D:\Program Files\RabbitMQ Server\rabbitmq_server-3.6.12\sbin)，输入：</p>
+<pre><code>rabbitmq-plugins enable rabbitmq_management
+</code></pre><p>稍等会会发现出现plugins安装成功的提示，默认是安装6个插件<br>在安装过程中也会出现错误，如下图所示：<br><img src="/images/2018-8-1/rabbitmq_plugin.png" alt=""><br>解决方法是：<br>首先在命令行输入：rabbitmq-service stop<br>接着输入rabbitmq-service remove<br>再输入rabbitmq-service install<br>再输入rabbitmq-service start<br>重新输入rabbitmq-plugins enable rabbitmq_management<br>等待安装成功，当然，我在试验过程中发现不重新安装，直接rabbitmq-service start后也是可以的。<br><img src="/images/2018-8-1/rabbitmq_pligins_error.png" alt=""></p>
+<h2 id="安装验证"><a href="#安装验证" class="headerlink" title="安装验证"></a>安装验证</h2><p>在浏览器输入<a href="http://localhost:15672" target="_blank" rel="noopener">http://localhost:15672</a><br>进行验证,看到下面界面：<br><img src="/images/2018-8-1/rabbitmq_test.png" alt=""><br>输入用户名：guest，密码：guest，进入管理界面<br><img src="/images/2018-8-1/rabbitmq_pligins_success.png" alt=""><br>至此，安装完成！</p>
+<p>本文另参考：<br><a href="https://blog.csdn.net/hzw19920329/article/details/53156015" target="_blank" rel="noopener">https://blog.csdn.net/hzw19920329/article/details/53156015</a></p>
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/07/25/jvm内存区域/" itemprop="url">
-              
-                <span itemprop="name">深入理解jvm之Java内存区域</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-07-25T18:26:19+08:00"
-              content="2018-07-25" >
-          07-25
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/07/25/策略模式/" itemprop="url">
-              
-                <span itemprop="name">设计模式之测略模式</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-07-25T14:26:19+08:00"
-              content="2018-07-25" >
-          07-25
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
     </div>
+    
+    
+    
+
+    
+
+    
+
+    
+	
+	<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:19px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+  
+	</div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RabbitMQ/" rel="tag"><i class="fa fa-tag"></i> RabbitMQ</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/27/GCoverview/" rel="next" title="垃圾收集概述">
+                <i class="fa fa-chevron-left"></i> 垃圾收集概述
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/02/mysql问题解决/" rel="prev" title="安装mysql出现no compatible servers were found">
+                安装mysql出现no compatible servers were found <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -533,6 +495,13 @@
 
 
           
+
+  
+	<div id="gitalk-container"></div>
+ 
+  
+
+
 
         </div>
         
@@ -553,8 +522,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -646,6 +624,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Erlang"><span class="nav-number">1.</span> <span class="nav-text">安装Erlang</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装RabbitMQ"><span class="nav-number">2.</span> <span class="nav-text">安装RabbitMQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装RabbitMQ-Plugins"><span class="nav-number">3.</span> <span class="nav-text">安装RabbitMQ-Plugins</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装验证"><span class="nav-number">4.</span> <span class="nav-text">安装验证</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -789,6 +783,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
@@ -829,6 +827,21 @@
 
 
 
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: '480fe6b918bc64792962',
+          clientSecret: 'b49cd795153c0b3600f9364e377d4963571a85b5',
+          repo: 'liuyi6.github.io',
+          owner: 'liuyi6',
+          admin: ['liuyi6'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
 
   
 
