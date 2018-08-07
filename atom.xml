@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-08-03T15:43:52.402Z</updated>
+  <updated>2018-08-07T15:55:22.030Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>垃圾收集器详解</title>
+    <link href="http://yoursite.com/2018/08/07/GCdetailed/"/>
+    <id>http://yoursite.com/2018/08/07/GCdetailed/</id>
+    <published>2018-08-07T15:13:19.000Z</published>
+    <updated>2018-08-07T15:55:22.030Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;垃圾收集器作为内存回收的具体表现，Java虚拟机规范并未对垃圾收集器的实现做规定，因而不同版本的虚拟机有很大产别，因而我们在这里主要讨论基于
+      
+    
+    </summary>
+    
+      <category term="jvm" scheme="http://yoursite.com/categories/jvm/"/>
+    
+    
+      <category term="垃圾收集" scheme="http://yoursite.com/tags/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86/"/>
+    
+  </entry>
   
   <entry>
     <title>2018上半年总结与下半年展望</title>
