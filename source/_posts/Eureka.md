@@ -14,7 +14,7 @@ Eureka的基本架构图如下图所示：
 Register Service:服务注册中心，是Eureka Service,提供服务注册和发现的功能
 Provider Service:服务提供者，是Eureka Client,提供服务
 Consumer Service:服务消费者，是Eureka Client,消费服务
-<img src="D:\2018-7-31\images\2018-7-31\springcloud_Eureka.png" width = "350" height = "200" />
+<img src="/images/2018-7-31/springcloud_Eureka.png" width = "350" height = "200" />
 消费服务的基本过程如下：
 首先建立服务注册中心Eureka Service，服务提供者Eureka Client向服务注册中心注册，将自己的信息通过REST API的方式提交给Eureka Service。同样的，服务消费者Eureka Client也可以向服务中心注册，同时获取一份服务注册列表信息，该列表包含了所有向服务注册中心注册的服务信息。获取服务注册列表信息之后，服务消费者就知道服务提供者的IP地址，可通过Http远程调度来消费服务提供者的服务。
 项目实战
@@ -22,7 +22,7 @@ Consumer Service:服务消费者，是Eureka Client,消费服务
 下面我们就搭建基于Eueeka的注册服务客户端与服务端。项目采用Maven多Module的结构，即创建一个Maven主项目，其他项目以Module的形式存在。
 项目的开发环境:Eclpse、jdk1.8、Maven3.5
 项目的结构如下所示：
-![](D:\\2018-7-31\images\2018-7-31\springcloud_eureka_project_structure.png)
+![](/images/2018-7-31/springcloud_eureka_project_structure.png)
 **Maven主工程**
 创建Mavne项目eureka-parent，并指定为pom工程。创建项目完成后在pom文件中添加依赖，包括指定Spring Boot版本，jdk版本。pom文件的代码如下：
 
@@ -111,7 +111,7 @@ Eureka服务端—eureka-server
     }
 **服务端测试**
 运行EurekaServerApplication类，运行正常后，在浏览器输入：localhost:8761，若出现如下结果，则成功。
-![](D:\\2018-7-31\images\2018-7-31\springcloud_eureka_server_show.png)
+![](/images/2018-7-31/springcloud_eureka_server_show.png)
 Eureka客户端—eureka-client
 ---
 **项目创建**
@@ -158,7 +158,7 @@ Eureka客户端—eureka-client
     }
 **客户端测试**
 运行EurekaClientApplication类，运行正常后，刷新浏览器输入：localhost:8761，若出现如下结果，则成功。如图说明Eureka client已经向Eureka Server注册。
-![](D:\\2018-7-31\images\2018-7-31\springcloud_eureka_client_show.png)
+![](/images/2018-7-31/springcloud_eureka_client_show.png)
 再使用API接口测试，在客户端项目中的controller层新建HiController类，并加上@RestController注解。并用@GetMapping设置Get请求的映射地址为“/hi",具体代码如下所示：
 
     @RestController
@@ -172,7 +172,7 @@ Eureka客户端—eureka-client
         }
     }
 在浏览器输入：localhost:8762/hi?name=luis,结果如下图所示：
-![](D:\\2018-7-31\images\2018-7-31\springcloud_eureka_client_web_show.png)
+![](/images/2018-7-31/springcloud_eureka_client_web_show.png)
 
 至此，已经成功搭建起Eureka注册中心，后面将会再次基础上进行服务的添加。
 
