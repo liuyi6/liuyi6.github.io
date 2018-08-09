@@ -176,4 +176,7 @@ Eureka客户端—eureka-client
 
 至此，已经成功搭建起Eureka注册中心，后面将会再次基础上进行服务的添加。
 
+项目源代码：
+参见[github](https://github.com/liuyi6/spring-cloud-example)
+参见[码云](https://gitee.com/liuyi6/spring-cloud-example)
 本文主要参考自《深入理解Spring Cloud与微服务构建》一书
