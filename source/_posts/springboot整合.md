@@ -13,7 +13,7 @@ Swagger是一个功能强大的在线API文档框架，目前版本为2.x,故称
 ---
 项目环境：eclipse、maven、jdk1.8、mysql数据库
 项目结构如下图所示：
-![](D:\2018-7-31\images\2018-7-31\springboot_swagger_jpa_project_structure.png)
+![](/images/2018-7-31/springboot_swagger_jpa_project_structure.png)
 **项目搭建**
 首先，新建maven项目，并在pom文件中引入依赖，springboot的版本，引入springboot项目的起步依赖，再加入JPA依赖与Swagger2依赖。具体代码如下所示：
 
@@ -231,7 +231,7 @@ Swagger是一个功能强大的在线API文档框架，目前版本为2.x,故称
 项目测试
 ---
 启动工程，在浏览器上访问localhost:8080/swagger-yi.html,浏览器显示Swagger在线文档界面，如下图所示：
-![](D:\2018-7-31\images\2018-7-31\springboot_swagger_jpa_show.png)
+![](/images/2018-7-31/springboot_swagger_jpa_show.png)
 开发者可通过此界面便捷的查阅，测试项目功能。
 
 附：
