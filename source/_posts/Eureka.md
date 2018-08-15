@@ -1,7 +1,7 @@
 ---
 title: springcloud之服务注册与发现(Eureka)
 date: 2018-08-08 16:13:19
-tags: [SpringCloud,Eureka]
+tags: [SpringCloud]
 categories: SpringCloud
 ---
 Eureka简介
