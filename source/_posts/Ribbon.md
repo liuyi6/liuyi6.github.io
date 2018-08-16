@@ -6,7 +6,7 @@ categories: SpringCloud
 ---
 RestTemplate简介
 ---
-RestTemplate是Spring Resources中访问第三方RESTful API接口的网络请求框架。RestTemplate是是用来消费REST服务的，所以RestTemplate主要方法与参与REST的Http协议的方法紧密连接，如headForHeaders(),getFoeObject(),postForObject(),put(),delete()等。
+RestTemplate是Spring Resources中访问第三方RESTful API接口的网络请求框架。RestTemplate是是用来消费REST服务的，所以RestTemplate主要方法与参与REST的Http协议的方法紧密连接。如headForHeaders()、getFoeObject()、postForObject()、put()、delete()等。
 RestTemplate很容易构建RESTful API,它支持常见的Http协议请求方法，如Put,Post,Delete等。它支持Xml、JSON数据格式，默认实现了序列化，克自动将JSON字符串转换为实体。如下为示例代码：
 
 	User user = restTemplate.getForObject("https://www.xxx.com/",User.class);
