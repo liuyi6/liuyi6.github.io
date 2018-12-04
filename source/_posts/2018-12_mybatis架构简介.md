@@ -1,5 +1,5 @@
 ---
-title: mybatis架构简介
+title: Mybatis架构简介
 date: 2018-12-01 11:45:19
 tags: [mybatis]
 categories: mybatis
