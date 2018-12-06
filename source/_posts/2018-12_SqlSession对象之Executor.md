@@ -40,16 +40,16 @@ Executor是一个接口，主要有两个实现类：分别是BaseExecutor和Cac
 BaseExecutor是一个抽象类，这种通过抽象类实现接口的方式是适配器设计模式的体现，主要用于方便次一级子类对接口中方法的实现。BaseExecutor主要有三个实现类**SimpleExecutor**、**ReuseExecutor**和**BatchExecutor**。三个实现类分别对应executor对Statement对象管理方案。
 
 * **简单方案**：一个Statement接口对象只执行一次，执行完毕就会Statement接口对象进行销毁。对应SimpleExecutor，被称为简单执行器，是MyBatis中默认使用的执行器，每执行一次update或select，就开启一个Statement对象，用完立刻关闭Statement对象（可以是Statement或PrepareStatement对象）。
-* **可重用方案**：对应ReuseExecutor，被称为可重用执行器，重用指的是重复使用Statement，它会在内部利用一个Map把创建的Statement都缓存起来，每次在执行一条SQL语句时，它都会去判断之前是否存在基于该SQL缓存的Statement对象，存在而且之前缓存的Statement对象对应的Connection还没有关闭的时候就继续用之前的Statement对象，否则将创建一个新的Statement对象，并将其缓存起来。因为每一个新的SqlSession都有一个新的Executor对象，所以我们缓存在ReuseExecutor上的Statement的作用域是同一个SqlSession。
+* **可重用方案**：对应ReuseExecutor，被称为可重用执行器，重用指的是重复使用Statement，它会在内部利用一个Map把初始化的Statement都缓存起来，每次在执行一条SQL语句时，它都会去判断之前是否存在基于该SQL缓存的Statement对象，存在而且之前缓存的Statement对象对应的Connection还没有关闭的时候就继续用之前的Statement对象，否则将初始化一个新的Statement对象，并将其缓存起来。因为每一个新的SqlSession都有一个新的Executor对象，所以我们缓存在ReuseExecutor上的Statement的作用域是同一个SqlSession。
 * **批量处理方案**：对应BatchExecutor，称为批处理执行器，用于将多个Statement对应的SQL语句，交给一个Statement对象一次输送到数据库，进行批处理操作。
 
 ##### CachingExecutor类
 
 CachingExecutor称为缓存执行器，MyBatis框架默认情况下使用执行器缓存执行器，可以提高查询效率，先从缓存中获取查询结果，存在就返回，不存在，再委托给Executor delegate去数据库取，delegate可以是SimpleExecutor、ReuseExecutor、BatchExecutor中任意一个。
 
-#### Executor对象创建
+#### Executor对象初始化
 
-Executor的创建是在SqlSessionFactory调用openSession方法期间创建的，首先看一下SqlSessionFactory中的方法，具体代码如下：
+Executor的初始化是在SqlSessionFactory调用openSession方法期间初始化的，首先看一下SqlSessionFactory中的方法，具体代码如下：
 
 ```java
 public interface SqlSessionFactory {
@@ -70,7 +70,7 @@ public interface SqlSessionFactory {
 }
 ```
 
-有代码可见，SqlSessionFactory中的openSession方法分为两类：带ExecutorType和不带ExecutorType的，此外每个类型还有四种，这里采用了重载的方法，方法名称相同，参数列表不同。下面进入到SqlSessionFactory的实现类DefaultSqlSessionFactory中查看openSession()d的实现，代码如下：
+由代码可见，SqlSessionFactory中的openSession方法分为两类：带ExecutorType和不带ExecutorType的，此外每个类型还有四种，这里采用了重载的方法，方法名称相同，参数列表不同。下面进入到SqlSessionFactory的实现类DefaultSqlSessionFactory中查看openSession()d的实现，代码如下：
 
 ```java
   @Override
@@ -85,7 +85,7 @@ public interface SqlSessionFactory {
 ...
 ```
 
-通过擦好看代码发现，所有的openSession方法都会走向openSessionFromDataSource方法中，查看openSessionFromDataSource的代码，其代码如下：
+通过查看代码发现，所有的openSession方法都会走向openSessionFromDataSource方法中，openSessionFromDataSource的代码如下：
 
 ```java
 private SqlSession openSessionFromConnection(ExecutorType execType, Connection connection) {
@@ -116,7 +116,7 @@ private SqlSession openSessionFromConnection(ExecutorType execType, Connection c
  return new DefaultSqlSession(configuration, executor, autoCommit);
 ```
 
-这两行代码先产生executor，再产生了DefaultSqlSession对象，也验证了前面所说的执行器是在SqlSession之前创建的。下面我们继续查看执行器的创建，它的创建是由Configuration完成的，创建Executor的方法newExecutor()的代码如下所示：
+这两行代码先产生executor，再产生了DefaultSqlSession对象，也验证了前面所说的执行器的初始化是在SqlSession初始化之前进行的。下面我们继续查看执行器的初始化过程，它的初始化是由Configuration完成的，初始化Executor的方法newExecutor()的代码如下所示：
 
 ```java
 public Executor newExecutor(Transaction transaction, ExecutorType executorType) {
@@ -142,7 +142,7 @@ public Executor newExecutor(Transaction transaction, ExecutorType executorType) 
 protected ExecutorType defaultExecutorType = ExecutorType.SIMPLE;
 ```
 
-由代码可见：首先判断创建ExecutorType是否为空，若不为空，则默认执行器为SimpleExecutor。而这里的ExecutorType类型则是由openSession方法传入的，因而SqlSessionFactory中没有ExecutorType参数的openSession()则默认为SimpleExecutor。此外关注以下代码：
+由代码可见：首先判断初始化ExecutorType是否为空，若不为空，则默认执行器为SimpleExecutor。而这里的ExecutorType类型则是由openSession方法传入的，因而SqlSessionFactory中没有ExecutorType参数的openSession()则默认为SimpleExecutor。此外关注以下代码：
 
 ```java
 protected boolean cacheEnabled = true;
@@ -152,7 +152,7 @@ if (cacheEnabled) {
 }
 ```
 
-这里创建的CachingExecutor执行器，可见默认情况下CachingExecutor执行器是开启的。
+这里是初始化CachingExecutor执行器，可见默认情况下CachingExecutor执行器是开启的。
 
 #### ExecutorType的选择
 
