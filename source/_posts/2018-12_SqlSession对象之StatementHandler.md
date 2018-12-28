@@ -1,7 +1,7 @@
 ---
 title: SqlSession对象之StatementHandler
 date: 2018-12-06 23:24:19
-tags: [	mybatis]
+tags: [mybatis]
 categories: mybatis
 ---
 上一篇讲了SqlSession对象中的Executor，接下来将对SqlSession的另一个对象StatementHandler进行讲解。

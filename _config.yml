@@ -84,7 +84,7 @@ deploy:
   type: git
   repository: 
     github: git@github.com:liuyi6/liuyi6.github.io.git,master
-    coding: git@git.coding.net:liuyi6/liuyi6.coding.me.git,master
+    #coding: git@git.coding.net:liuyi6/liuyi6.coding.me.git,master
 
 # feed
 # Dependencies: https://github.com/hexojs/hexo-generator-feed
