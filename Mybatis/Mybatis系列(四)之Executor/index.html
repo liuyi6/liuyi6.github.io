@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Mybatis系列(四)之Executor - 刘艺 | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.liuyi6.github.io/Mybatis/Mybatis系列(四)之Executor/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_bg.jpg')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Mybatis" title="Mybatis">Mybatis</a>
+                            
+                        </div>
+                        <h1>Mybatis系列(四)之Executor</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 刘艺 on
+                            2018-12-05
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">刘 艺</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>Executor是Mybatis的一个核心接口，每一个SqlSession对象都会拥有一个Executor(执行器对象)；这个执行对象负责[增删改查]的具体操作，我们可以简单的将它理解为JDBC中Statement的封装版。它的代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Executor</span> </span>&#123;</span><br><span class="line">  ResultHandler NO_RESULT_HANDLER = <span class="keyword">null</span>;</span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">update</span><span class="params">(MappedStatement ms, Object parameter)</span> <span class="keyword">throws</span> SQLException</span>;</span><br><span class="line">  &lt;E&gt; <span class="function">List&lt;E&gt; <span class="title">query</span><span class="params">(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey cacheKey, BoundSql boundSql)</span> <span class="keyword">throws</span> SQLException</span>;</span><br><span class="line">  &lt;E&gt; <span class="function">List&lt;E&gt; <span class="title">query</span><span class="params">(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler)</span> <span class="keyword">throws</span> SQLException</span>;</span><br><span class="line">  &lt;E&gt; <span class="function">Cursor&lt;E&gt; <span class="title">queryCursor</span><span class="params">(MappedStatement ms, Object parameter, RowBounds rowBounds)</span> <span class="keyword">throws</span> SQLException</span>;</span><br><span class="line">  <span class="function">List&lt;BatchResult&gt; <span class="title">flushStatements</span><span class="params">()</span> <span class="keyword">throws</span> SQLException</span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">commit</span><span class="params">(<span class="keyword">boolean</span> required)</span> <span class="keyword">throws</span> SQLException</span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">rollback</span><span class="params">(<span class="keyword">boolean</span> required)</span> <span class="keyword">throws</span> SQLException</span>;</span><br><span class="line">  <span class="function">CacheKey <span class="title">createCacheKey</span><span class="params">(MappedStatement ms, Object parameterObject, RowBounds rowBounds, BoundSql boundSql)</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">boolean</span> <span class="title">isCached</span><span class="params">(MappedStatement ms, CacheKey key)</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">clearLocalCache</span><span class="params">()</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">deferLoad</span><span class="params">(MappedStatement ms, MetaObject resultObject, String property, CacheKey key, Class&lt;?&gt; targetType)</span></span>;</span><br><span class="line">  <span class="function">Transaction <span class="title">getTransaction</span><span class="params">()</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">close</span><span class="params">(<span class="keyword">boolean</span> forceRollback)</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">boolean</span> <span class="title">isClosed</span><span class="params">()</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">setExecutorWrapper</span><span class="params">(Executor executor)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="executor的继承结构">Executor的继承结构</h4>
+<p>Executor的类图如下所示：</p>
+<p><img src="/img/2018-12/mybatis_exectour_class.png" alt="mybatis_exectour_class"></p>
+<p>Executor是一个接口，主要有两个实现类：分别是BaseExecutor和CachingExecutor。</p>
+<h5 id="baseexecutor类">BaseExecutor类</h5>
+<p>BaseExecutor是一个抽象类，这种通过抽象类实现接口的方式是适配器设计模式的体现，主要用于方便次一级子类对接口中方法的实现。BaseExecutor主要有三个实现类<strong>SimpleExecutor</strong>、<strong>ReuseExecutor</strong>和<strong>BatchExecutor</strong>。三个实现类分别对应executor对Statement对象管理方案。</p>
+<ul>
+<li><strong>简单方案</strong>：一个Statement接口对象只执行一次，执行完毕就会Statement接口对象进行销毁。对应SimpleExecutor，被称为简单执行器，是MyBatis中默认使用的执行器，每执行一次update或select，就开启一个Statement对象，用完立刻关闭Statement对象（可以是Statement或PrepareStatement对象）。</li>
+<li><strong>可重用方案</strong>：对应ReuseExecutor，被称为可重用执行器，重用指的是重复使用Statement，它会在内部利用一个Map把初始化的Statement都缓存起来，每次在执行一条SQL语句时，它都会去判断之前是否存在基于该SQL缓存的Statement对象，存在而且之前缓存的Statement对象对应的Connection还没有关闭的时候就继续用之前的Statement对象，否则将初始化一个新的Statement对象，并将其缓存起来。因为每一个新的SqlSession都有一个新的Executor对象，所以我们缓存在ReuseExecutor上的Statement的作用域是同一个SqlSession。</li>
+<li><strong>批量处理方案</strong>：对应BatchExecutor，称为批处理执行器，用于将多个Statement对应的SQL语句，交给一个Statement对象一次输送到数据库，进行批处理操作。</li>
+</ul>
+<h5 id="cachingexecutor类">CachingExecutor类</h5>
+<p>CachingExecutor称为缓存执行器，MyBatis框架默认情况下使用执行器缓存执行器，可以提高查询效率，先从缓存中获取查询结果，存在就返回，不存在，再委托给Executor delegate去数据库取，delegate可以是SimpleExecutor、ReuseExecutor、BatchExecutor中任意一个。</p>
+<h4 id="executor对象初始化">Executor对象初始化</h4>
+<p>Executor的初始化是在SqlSessionFactory调用openSession方法期间初始化的，首先看一下SqlSessionFactory中的方法，具体代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">SqlSessionFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="function">SqlSession <span class="title">openSession</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function">SqlSession <span class="title">openSession</span><span class="params">(<span class="keyword">boolean</span> autoCommit)</span></span>;</span><br><span class="line">  <span class="function">SqlSession <span class="title">openSession</span><span class="params">(Connection connection)</span></span>;</span><br><span class="line">  <span class="function">SqlSession <span class="title">openSession</span><span class="params">(TransactionIsolationLevel level)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function">SqlSession <span class="title">openSession</span><span class="params">(ExecutorType execType)</span></span>;</span><br><span class="line">  <span class="function">SqlSession <span class="title">openSession</span><span class="params">(ExecutorType execType, <span class="keyword">boolean</span> autoCommit)</span></span>;</span><br><span class="line">  <span class="function">SqlSession <span class="title">openSession</span><span class="params">(ExecutorType execType, TransactionIsolationLevel level)</span></span>;</span><br><span class="line">  <span class="function">SqlSession <span class="title">openSession</span><span class="params">(ExecutorType execType, Connection connection)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function">Configuration <span class="title">getConfiguration</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由代码可见，SqlSessionFactory中的openSession方法分为两类：带ExecutorType和不带ExecutorType的，此外每个类型还有四种，这里采用了重载的方法，方法名称相同，参数列表不同。下面进入到SqlSessionFactory的实现类DefaultSqlSessionFactory中查看openSession()d的实现，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> SqlSession <span class="title">openSession</span><span class="params">(ExecutorType execType)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> openSessionFromDataSource(execType, <span class="keyword">null</span>, <span class="keyword">false</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> SqlSession <span class="title">openSession</span><span class="params">(TransactionIsolationLevel level)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> openSessionFromDataSource(configuration.getDefaultExecutorType(), level, <span class="keyword">false</span>);</span><br><span class="line">  &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>通过查看代码发现，所有的openSession方法都会走向openSessionFromDataSource方法中，openSessionFromDataSource的代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> SqlSession <span class="title">openSessionFromConnection</span><span class="params">(ExecutorType execType, Connection connection)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">boolean</span> autoCommit;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        autoCommit = connection.getAutoCommit();</span><br><span class="line">      &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">        autoCommit = <span class="keyword">true</span>;</span><br><span class="line">      &#125;      </span><br><span class="line">      <span class="keyword">final</span> Environment environment = configuration.getEnvironment();</span><br><span class="line">      <span class="keyword">final</span> TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);</span><br><span class="line">      <span class="keyword">final</span> Transaction tx = transactionFactory.newTransaction(connection);</span><br><span class="line">      <span class="keyword">final</span> Executor executor = configuration.newExecutor(tx, execType);</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> DefaultSqlSession(configuration, executor, autoCommit);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">      <span class="keyword">throw</span> ExceptionFactory.wrapException(<span class="string">"Error opening session.  Cause: "</span> + e, e);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      ErrorContext.instance().reset();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>主要看其中的两行代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> Executor executor = configuration.newExecutor(tx, execType);</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">new</span> DefaultSqlSession(configuration, executor, autoCommit);</span><br></pre></td></tr></table></figure>
+<p>这两行代码先产生executor，再产生了DefaultSqlSession对象，也验证了前面所说的执行器的初始化是在SqlSession初始化之前进行的。下面我们继续查看执行器的初始化过程，它的初始化是由Configuration完成的，初始化Executor的方法newExecutor()的代码如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Executor <span class="title">newExecutor</span><span class="params">(Transaction transaction, ExecutorType executorType)</span> </span>&#123;</span><br><span class="line">    executorType = executorType == <span class="keyword">null</span> ? defaultExecutorType : executorType;</span><br><span class="line">    executorType = executorType == <span class="keyword">null</span> ? ExecutorType.SIMPLE : executorType;</span><br><span class="line">    Executor executor;</span><br><span class="line">    <span class="keyword">if</span> (ExecutorType.BATCH == executorType) &#123;</span><br><span class="line">      executor = <span class="keyword">new</span> BatchExecutor(<span class="keyword">this</span>, transaction);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (ExecutorType.REUSE == executorType) &#123;</span><br><span class="line">      executor = <span class="keyword">new</span> ReuseExecutor(<span class="keyword">this</span>, transaction);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      executor = <span class="keyword">new</span> SimpleExecutor(<span class="keyword">this</span>, transaction);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (cacheEnabled) &#123;</span><br><span class="line">      executor = <span class="keyword">new</span> CachingExecutor(executor);</span><br><span class="line">    &#125;</span><br><span class="line">    executor = (Executor) interceptorChain.pluginAll(executor);</span><br><span class="line">    <span class="keyword">return</span> executor;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> ExecutorType defaultExecutorType = ExecutorType.SIMPLE;</span><br></pre></td></tr></table></figure>
+<p>由代码可见：首先判断初始化ExecutorType是否为空，若不为空，则默认执行器为SimpleExecutor。而这里的ExecutorType类型则是由openSession方法传入的，因而SqlSessionFactory中没有ExecutorType参数的openSession()则默认为SimpleExecutor。此外关注以下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="keyword">boolean</span> cacheEnabled = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (cacheEnabled) &#123;</span><br><span class="line">      executor = <span class="keyword">new</span> CachingExecutor(executor);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里是初始化CachingExecutor执行器，可见默认情况下CachingExecutor执行器是开启的。</p>
+<h4 id="executortype的选择">ExecutorType的选择</h4>
+<p>ExecutorType是枚举类型，其代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> ExecutorType &#123;</span><br><span class="line">  SIMPLE, REUSE, BATCH</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ExecutorType的枚举值分别对应三种执行器类型：简单执行器、可重用执行器、批量执行器。</p>
+<p>ExecutorType的类型选择，有两种方式对其进行赋值。</p>
+<h5 id="ltsettingsgt标签设置">&lt;settings&gt;标签设置</h5>
+<p>通过&lt;settings&gt;标签来设置当前工程中所有SqlSession对象使用的默认Executour。</p>
+<p><img src="/img/2018-12/mybatis_executor_seeting1.png" alt="mybatis_executor_seeting1"></p>
+<h5 id="opensession方法指定">openSession方法指定</h5>
+<p>通过SqlSessoinFactory中openSession方法来指定具体的SqlSession使用的执行器。</p>
+<p><img src="/img/2018-12/mybatis_executor_seeting2.png" alt="mybatis_executor_seeting2"></p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/Mybatis/Mybatis系列(五)之StatementHandler/" data-toggle="tooltip" data-placement="top" title="Mybatis系列(五)之StatementHandler">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/Mybatis/Mybatis系列(三)之SessionFactory原理/" data-toggle="tooltip" data-placement="top" title="Mybatis系列(三)之SessionFactory原理">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Mybatis" title="Mybatis">Mybatis</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/liuyi6">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 刘艺 2019 
+                    <br>
+                    Theme by <a href="https://www.huweihuang.com/">胡伟煌</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a href="http://liuyi6.github.io">刘艺</a> 
+					<!--
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=huweihuang&repo=hexo-theme-huweihuang&type=star&count=true" >
+                    </iframe>
+					-->
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.liuyi6.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.liuyi6.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

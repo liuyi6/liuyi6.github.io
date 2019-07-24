@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Mybatis系列(五)之StatementHandler - 刘艺 | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.liuyi6.github.io/Mybatis/Mybatis系列(五)之StatementHandler/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_bg.jpg')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Mybatis" title="Mybatis">Mybatis</a>
+                            
+                        </div>
+                        <h1>Mybatis系列(五)之StatementHandler</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 刘艺 on
+                            2018-12-06
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">刘 艺</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>上一篇讲了SqlSession对象中的Executor，接下来将对SqlSession的另一个对象StatementHandler进行讲解。</p>
+<h4 id="statementhandler介绍">StatementHandler介绍</h4>
+<p>StatementHandler是Mybatis中最重要的一个对象，它负责操作Statement与数据库进行交流，在此过程中还会调用ParameterHandler进行参数配置，使用ResultHandler将查询结果与实体类对象进行绑定。因而ParameterHandler与ResultHandler的创建是与StatementHandler相关联的。</p>
+<p>StatementHandler是一个顶级接口，它的类图如下所示：</p>
+<p><img src="/img/2018-12/mybatis_statement_entends.png" alt="mybatis_statement_entends"></p>
+<p>StatementHandler接口下有两个直接实现类BaseStatementHandler和RoutingStatementHandler</p>
+<h5 id="routingstatementhandler类">RoutingStatementHandler类</h5>
+<p>RoutingStatementHandler：是一个具体实现类，在这个类中并没有对Statement对象进行具体使用，只是根据得到Executor类型决定创建何种类型StatementHandler对象。在MyBatis工作时，使用的StatementHandler接口对象实际上就是RoutingStatementHandler对象。</p>
+<p>可以简单理解为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">StatementHandler statmentHandler = <span class="keyword">new</span> RountingStatementHandler();</span><br></pre></td></tr></table></figure>
+<h5 id="basestatementhandler抽象类">BaseStatementHandler抽象类</h5>
+<p>BaseStatementHandler：是StatementHandler接口的另一个实现类，本身是一个抽象类，用于简化StatementHandler接口实现的难度，属于适配器设计模式体现。它有三个实现类：SimpleStatementHandler，PreparedStatementHandler和CallableStatementHandler。</p>
+<p>在RountingStatementHandler创建时,就根据接收的传递的SQL语句来创建这个三个类型的对象。</p>
+<p><strong>SimpleStatementHandler</strong>：管理Statement对象向数据库中推送不需要预编译的SQL语句。</p>
+<p><strong>PreparedStatementHandler</strong>：管理PreparedStatementHandler对象向数据库推送预编译的SQL语句。</p>
+<p><strong>CallableStatementHandler</strong>：管理CallableStatement对象调用数据库中构造函数，即有存储过程的SQL语句。</p>
+<h4 id="statementhandler接口方法介绍">StatementHandler接口方法介绍</h4>
+<p>StatementHandler是一个接口，其代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">StatementHandler</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="function">Statement <span class="title">prepare</span><span class="params">(Connection connection, Integer transactionTimeout)</span><span class="keyword">throws</span> SQLException</span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">parameterize</span><span class="params">(Statement statement)</span><span class="keyword">throws</span> SQLException</span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">batch</span><span class="params">(Statement statement)</span><span class="keyword">throws</span> SQLException</span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">update</span><span class="params">(Statement statement)</span><span class="keyword">throws</span> SQLException</span>;</span><br><span class="line"></span><br><span class="line">  &lt;E&gt; <span class="function">List&lt;E&gt; <span class="title">query</span><span class="params">(Statement statement, ResultHandler resultHandler)</span><span class="keyword">throws</span> SQLException</span>;</span><br><span class="line"></span><br><span class="line">  &lt;E&gt; <span class="function">Cursor&lt;E&gt; <span class="title">queryCursor</span><span class="params">(Statement statement)</span><span class="keyword">throws</span> SQLException</span>;</span><br><span class="line"></span><br><span class="line">  <span class="function">BoundSql <span class="title">getBoundSql</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function">ParameterHandler <span class="title">getParameterHandler</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们主要关注StatementHandler中的四个重要方法：prepare()、parameterize()、update()、query()</p>
+<h5 id="prepare方法">prepare方法</h5>
+<p>prepare方法主要是在BaseStatementHandler类中实现的，其代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Statement <span class="title">prepare</span><span class="params">(Connection connection, Integer transactionTimeout)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">  ErrorContext.instance().sql(boundSql.getSql());</span><br><span class="line">  Statement statement = <span class="keyword">null</span>;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    statement = instantiateStatement(connection);</span><br><span class="line">    setStatementTimeout(statement, transactionTimeout);</span><br><span class="line">    setFetchSize(statement);</span><br><span class="line">    <span class="keyword">return</span> statement;</span><br><span class="line">  &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">    closeStatement(statement);</span><br><span class="line">    <span class="keyword">throw</span> e;</span><br><span class="line">  &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    closeStatement(statement);</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> ExecutorException(<span class="string">"Error preparing statement.  Cause: "</span> + e, e);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>prepare方法用于创建一个(Statement or PreparedStatement or CallableStatement)对象，并设置Statement对象的最大工作时间和一次性读取的最大数据量，然后将生成的Statement对象返回。</p>
+<p>prepare方法只在BaseStatementHandler被实现，在其三个子类中没有被重写。它主要用于三个子类调用获得对应的Statement接口对象，依靠instantiateStatement(connection)方法来返回具体Statement接口对象。instantiateStatement方法是BaseStatementHandler中定义的抽象方法,由三个子类来具体实现，这里采用了模板方法模式。</p>
+<p>SimpleStatementHandler的instantiateStatement方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> Statement <span class="title">instantiateStatement</span><span class="params">(Connection connection)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (mappedStatement.getResultSetType() != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> connection.createStatement(mappedStatement.getResultSetType().getValue(), ResultSet.CONCUR_READ_ONLY);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> connection.createStatement();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>PreparedStatementHandler的instantiateStatement方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> Statement <span class="title">instantiateStatement</span><span class="params">(Connection connection)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">    String sql = boundSql.getSql();</span><br><span class="line">    <span class="keyword">if</span> (mappedStatement.getKeyGenerator() <span class="keyword">instanceof</span> Jdbc3KeyGenerator) &#123;</span><br><span class="line">      String[] keyColumnNames = mappedStatement.getKeyColumns();</span><br><span class="line">      <span class="keyword">if</span> (keyColumnNames == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> connection.prepareStatement(sql, keyColumnNames);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mappedStatement.getResultSetType() != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> connection.prepareStatement(sql, mappedStatement.getResultSetType().getValue(), ResultSet.CONCUR_READ_ONLY);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> connection.prepareStatement(sql);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>CallableStatementHandler的instantiateStatement方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> Statement <span class="title">instantiateStatement</span><span class="params">(Connection connection)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">    String sql = boundSql.getSql();</span><br><span class="line">    <span class="keyword">if</span> (mappedStatement.getResultSetType() != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> connection.prepareCall(sql, mappedStatement.getResultSetType().getValue(), ResultSet.CONCUR_READ_ONLY);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> connection.prepareCall(sql);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h5 id="parameterize方法">parameterize方法</h5>
+<p>parameterize方法用于传递参数，因此只在PreparedStatementHandler和CallableStatementHandler中被重写。</p>
+<p>PreparedStatementHandler的parameterize方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">parameterize</span><span class="params">(Statement statement)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">    parameterHandler.setParameters((PreparedStatement) statement);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>CallableStatementHandler的parameterize方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">parameterize</span><span class="params">(Statement statement)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">    registerOutputParameters((CallableStatement) statement);</span><br><span class="line">    parameterHandler.setParameters((CallableStatement) statement);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>他们都调用了parameterHandler进行参数赋值。</p>
+<h5 id="query方法">query方法</h5>
+<p>query方法主要用于输送查询查询语句，并将查询结果转换对应的实体类对象。</p>
+<p>SimpleStatementHandler的query方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;E&gt; <span class="function">Cursor&lt;E&gt; <span class="title">queryCursor</span><span class="params">(Statement statement)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">    String sql = boundSql.getSql();</span><br><span class="line">    statement.execute(sql);</span><br><span class="line">    <span class="keyword">return</span> resultSetHandler.&lt;E&gt;handleCursorResultSets(statement);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>PreparedStatementHandler的query方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;E&gt; <span class="function">List&lt;E&gt; <span class="title">query</span><span class="params">(Statement statement, ResultHandler resultHandler)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">    PreparedStatement ps = (PreparedStatement) statement;</span><br><span class="line">    ps.execute();</span><br><span class="line">    <span class="keyword">return</span> resultSetHandler.&lt;E&gt; handleResultSets(ps);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>CallableStatementHandler的query方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;E&gt; <span class="function">List&lt;E&gt; <span class="title">query</span><span class="params">(Statement statement, ResultHandler resultHandler)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">    CallableStatement cs = (CallableStatement) statement;</span><br><span class="line">    cs.execute();</span><br><span class="line">    List&lt;E&gt; resultList = resultSetHandler.&lt;E&gt;handleResultSets(cs);</span><br><span class="line">    resultSetHandler.handleOutputParameters(cs);</span><br><span class="line">    <span class="keyword">return</span> resultList;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>由代码可知：在得到查询结果后，都是使用ResultSetHandler对结果进行转换的。</p>
+<h5 id="update方法">update方法</h5>
+<p>update方法用于输送insert、update、delete语句并返回处理数据行。</p>
+<p>SimpleStatementHandler的update方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">update</span><span class="params">(Statement statement)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">    String sql = boundSql.getSql();</span><br><span class="line">    Object parameterObject = boundSql.getParameterObject();</span><br><span class="line">    KeyGenerator keyGenerator = mappedStatement.getKeyGenerator();</span><br><span class="line">    <span class="keyword">int</span> rows;</span><br><span class="line">    <span class="keyword">if</span> (keyGenerator <span class="keyword">instanceof</span> Jdbc3KeyGenerator) &#123;</span><br><span class="line">      statement.execute(sql, Statement.RETURN_GENERATED_KEYS);</span><br><span class="line">      rows = statement.getUpdateCount();</span><br><span class="line">      keyGenerator.processAfter(executor, mappedStatement, statement, parameterObject);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (keyGenerator <span class="keyword">instanceof</span> SelectKeyGenerator) &#123;</span><br><span class="line">      statement.execute(sql);</span><br><span class="line">      rows = statement.getUpdateCount();</span><br><span class="line">      keyGenerator.processAfter(executor, mappedStatement, statement, parameterObject);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      statement.execute(sql);</span><br><span class="line">      rows = statement.getUpdateCount();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> rows;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>PreparedStatementHandler的update方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">update</span><span class="params">(Statement statement)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">    PreparedStatement ps = (PreparedStatement) statement;</span><br><span class="line">    ps.execute();</span><br><span class="line">    <span class="keyword">int</span> rows = ps.getUpdateCount();</span><br><span class="line">    Object parameterObject = boundSql.getParameterObject();</span><br><span class="line">    KeyGenerator keyGenerator = mappedStatement.getKeyGenerator();</span><br><span class="line">    keyGenerator.processAfter(executor, mappedStatement, ps, parameterObject);</span><br><span class="line">    <span class="keyword">return</span> rows;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>CallableStatementHandler的update方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">update</span><span class="params">(Statement statement)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">    CallableStatement cs = (CallableStatement) statement;</span><br><span class="line">    cs.execute();</span><br><span class="line">    <span class="keyword">int</span> rows = cs.getUpdateCount();</span><br><span class="line">    Object parameterObject = boundSql.getParameterObject();</span><br><span class="line">    KeyGenerator keyGenerator = mappedStatement.getKeyGenerator();</span><br><span class="line">    keyGenerator.processAfter(executor, mappedStatement, cs, parameterObject);</span><br><span class="line">    resultSetHandler.handleOutputParameters(cs);</span><br><span class="line">    <span class="keyword">return</span> rows;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="statementhandler对象创建">StatementHandler对象创建</h4>
+<p>StatementHandler对象是在SqlSession对象接收到操作命令后由Configuraion中newStatementHandler方法负责调用的。代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> StatementHandler <span class="title">newStatementHandler</span><span class="params">(Executor executor, MappedStatement mappedStatement, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql)</span> </span>&#123;</span><br><span class="line">    StatementHandler statementHandler = <span class="keyword">new</span> RoutingStatementHandler(executor, mappedStatement, parameterObject, rowBounds, resultHandler, boundSql);</span><br><span class="line">    statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandler);</span><br><span class="line">    <span class="keyword">return</span> statementHandler;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由代码知：statementHandler的创建调用了RoutingStatementHandler的构造方法。</p>
+<p>RoutingStatementHandler构造方法,将会根据StatementType决定创建SimpleStatementHandler，PreparedStatementHandler，CallableStatementHandler实例对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> StatementType &#123;</span><br><span class="line">  STATEMENT, PREPARED, CALLABLE</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>构造方法如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">RoutingStatementHandler</span><span class="params">(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">switch</span> (ms.getStatementType()) &#123;</span><br><span class="line">     <span class="keyword">case</span> STATEMENT:</span><br><span class="line">       delegate = <span class="keyword">new</span> SimpleStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);</span><br><span class="line">       <span class="keyword">break</span>;</span><br><span class="line">     <span class="keyword">case</span> PREPARED:</span><br><span class="line">       delegate = <span class="keyword">new</span> PreparedStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);</span><br><span class="line">       <span class="keyword">break</span>;</span><br><span class="line">     <span class="keyword">case</span> CALLABLE:</span><br><span class="line">       delegate = <span class="keyword">new</span> CallableStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);</span><br><span class="line">       <span class="keyword">break</span>;</span><br><span class="line">     <span class="keyword">default</span>:</span><br><span class="line">       <span class="keyword">throw</span> <span class="keyword">new</span> ExecutorException(<span class="string">"Unknown statement type: "</span> + ms.getStatementType());</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>而创建三种StatementHandler的构造方法都采用的是BaseStatementHandler的构造方法，其代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="title">BaseStatementHandler</span><span class="params">(Executor executor, MappedStatement mappedStatement, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.configuration = mappedStatement.getConfiguration();</span><br><span class="line">    <span class="keyword">this</span>.executor = executor;</span><br><span class="line">    <span class="keyword">this</span>.mappedStatement = mappedStatement;</span><br><span class="line">    <span class="keyword">this</span>.rowBounds = rowBounds;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.typeHandlerRegistry = configuration.getTypeHandlerRegistry();</span><br><span class="line">    <span class="keyword">this</span>.objectFactory = configuration.getObjectFactory();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (boundSql == <span class="keyword">null</span>) &#123; <span class="comment">// issue #435, get the key before calculating the statement</span></span><br><span class="line">      generateKeys(parameterObject);</span><br><span class="line">      boundSql = mappedStatement.getBoundSql(parameterObject);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.boundSql = boundSql;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.parameterHandler = configuration.newParameterHandler(mappedStatement, parameterObject, boundSql);</span><br><span class="line">    <span class="keyword">this</span>.resultSetHandler = configuration.newResultSetHandler(executor, mappedStatement, rowBounds, parameterHandler, resultHandler, boundSql);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>这里需要注意的是最后两行代码，创建了parameterHandler和resultSetHandler，这正好和前面所说的StatementHandler、parameterHandler和resultSetHandler是在一起创建的说法保持一致。</p>
+<p>创建好handler，执行器的方法会调用prepareStatement方法产生Statment.，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Statement <span class="title">prepareStatement</span><span class="params">(StatementHandler handler, Log statementLog)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">    Statement stmt;</span><br><span class="line">    BoundSql boundSql = handler.getBoundSql();</span><br><span class="line">    String sql = boundSql.getSql();</span><br><span class="line">    <span class="keyword">if</span> (hasStatementFor(sql)) &#123;</span><br><span class="line">      stmt = getStatement(sql);</span><br><span class="line">      applyTransactionTimeout(stmt);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      Connection connection = getConnection(statementLog);</span><br><span class="line">      stmt = handler.prepare(connection, transaction.getTimeout());</span><br><span class="line">      putStatement(sql, stmt);</span><br><span class="line">    &#125;</span><br><span class="line">    handler.parameterize(stmt);</span><br><span class="line">    <span class="keyword">return</span> stmt;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>此过程中会调用BaseStatementHandler的prepare方法，而在方法中又会调用instantiateStatement方法，通过Connection产生相应的Statment对象。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/Mybatis/Mybatis系列(六)之ResultSetHandler/" data-toggle="tooltip" data-placement="top" title="Mybatis系列(六)之ResultSetHandler">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/Mybatis/Mybatis系列(四)之Executor/" data-toggle="tooltip" data-placement="top" title="Mybatis系列(四)之Executor">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Mybatis" title="Mybatis">Mybatis</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/liuyi6">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 刘艺 2019 
+                    <br>
+                    Theme by <a href="https://www.huweihuang.com/">胡伟煌</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a href="http://liuyi6.github.io">刘艺</a> 
+					<!--
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=huweihuang&repo=hexo-theme-huweihuang&type=star&count=true" >
+                    </iframe>
+					-->
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.liuyi6.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.liuyi6.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

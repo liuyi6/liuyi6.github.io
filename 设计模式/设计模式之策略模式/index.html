@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          设计模式之策略模式 - 刘艺 | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.liuyi6.github.io/设计模式/设计模式之策略模式/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_bg.jpg')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#设计模式" title="设计模式">设计模式</a>
+                            
+                        </div>
+                        <h1>设计模式之策略模式</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 刘艺 on
+                            2018-07-25
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">刘 艺</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="前言">前言</h2>
+<p>最近在读《Head First设计模式》一书，为加强记忆及便于日后查阅，在博客将自己的学习过程进行记录。谨以本篇策略模式作为自己博客的开篇章，并在后续过程中不断丰富自己的博客内容，欢迎各位进行浏览。另由于个人水平有限，博客内容难免有不当之处，欢迎各位进行批评指正。<br>
+问题</p>
+<hr>
+<p>现有一游戏SimDuck，游戏采用OO技术开发，其中会出现各种各样的鸭子，可以一边游泳一边呱呱叫。现在要对游戏内容进行丰富，使得鸭子能够飞起来。<br>
+解决思路</p>
+<hr>
+<p><strong>思路1：继承</strong><br>
+在Duck父方法中加入fly()方法，简单快捷的实现鸭子的飞行</p>
+<img src="/img/2018-7-31/strategy_change.png" width="500" height="300">
+存在问题：
+若加入塑料橡皮鸭，木头诱饵鸭，继承Duck类之后，会出现橡皮鸭、诱饵鸭飞行的闹剧，因而在父类中加入fly()方法的思路不可行。
+**思路2：改进继承**
+![改进的继承](/img/2018-7-31/strategy_consider.png)
+Flyable与Quackable虽然解决了一些问题，但却造成代码无法复用，若有上百个鸭子类，每个都要修改飞行类，这简直就是一个噩梦。因而，我们要考虑其他的实现思路.
+**思路3：策略模式实现**
+接下来我们就用策略模式的方式实现SimDuck的需求。
+由上面分析可知，鸭子的quack()行为有“呱呱”、“吱吱”...... fly()行为有能自己飞的、不能飞的、依靠外力飞的...... 因而选择将这些不同的部分拿出来，建一组新类代表每个行为。
+![拿出不同](/img/2018-7-31/strategy_devidchange.png)
+在设计这些行为类的过程中，我们想要鸭子的行为可以动态的改变，并得到指定行为的鸭子实例。因而我们选择使用接口的方式构建鸭子行为，类图如下所示：
+![设置接口](/img/2018-7-31/strategy_designInterface.png)
+这样的设计，可以让飞行与和呱呱叫的动作被其他对象复用，同时可以在新增行为的过程中，不会影响到既有的行为类，这样就有了继承的“复用”好处，却又没有继承带来的麻烦。
+整合鸭子的行为
+在Duck类中“加入两个实力变量”，分别为flyBehavior和quackBehavior,声明为接口类型，每个鸭子对象都会动态的设置变量以在运行时引用正确的行为类型。
+Dack类代码如下所示：
+<pre><code>public class Duck {
+    QuackBehavior quackBehavior;
+    FlyBehavior flyBehavior;
+
+    public abstract void display();
+    public void performFly(){
+    	flyBehavior.fly();
+    }
+     public void performQuack(){
+    	quackBehavior.quack;
+    }
+    
+    public void setFlyBehavior(FlyBehavior fb){
+    	flyBehavior = fb;
+    }
+    public void setQuackBehavior(QuackBehavior qb){
+    	quackBehavior = qb;
+    }
+}
+</code></pre>
+<p>fly算法族的代码如下所示：</p>
+<pre><code>public interface flyBehavior{
+    public void fly();
+}
+
+public class FlyWithWings implents flyBehavior{
+    public void fly(){
+        System.out.println(&quot;I'm flying&quot;);
+    }
+}
+
+public class FlyNoWay implents flyBehavior{
+    public void fly(){
+        System.out.println(&quot;I can't fly&quot;);
+    }
+}
+</code></pre>
+<p>quack算法族的代码如下所示：</p>
+<pre><code>public interface quackBehavior{
+    public void quack();
+}
+public class Quack implents quackBehavior{
+    public void quack(){
+        System.out.println(&quot;Quack&quot;);
+    }
+}
+public class MuteQuack implents quackBehavior{
+    public void quack(){
+        System.out.println(&quot;...silence...&quot;);
+    }
+}
+public class Squeak implents quackBehavior{
+    public void quack(){
+        System.out.println(&quot;Squeak&quot;);
+    }
+}
+</code></pre>
+<p>最后我们编辑一下测试类：</p>
+<pre><code>public class MiniDuckSimulator{
+    public static void main(String[] args){
+        Duck mallard = new MallardDuck();
+        mallard.proformQuack();
+        mallard.profpormFly();
+    }
+}
+</code></pre>
+<p><strong>动态行为设定</strong><br>
+现在加入模型鸭，其通过火箭实现飞行</p>
+<pre><code>public class ModelDuck extends Duck{
+    public ModelDuck(){
+        quackBehavior = new Quack;
+        flyBehavior = new FlyNoWay();
+    }
+    public void display(){
+        System.out.printin(&quot;I;m a model duck&quot;);
+    }
+}
+</code></pre>
+<p>新建FlyBehavior类型FlyRocketPowered</p>
+<pre><code>public class FlyRocketPowered implements FlyBehavior{
+    public void fly(){
+        System.out.println(&quot;Im fly with rocket!&quot;);
+    }
+}
+</code></pre>
+<p>修改测试类使得模型鸭具有火箭动力</p>
+<pre><code>public class MiniDuckSimulator{
+    public static void main(String[] args){
+        Duck mallard = new MallardDuck();
+        mallard.proformQuack();
+        mallard.profpormFly();
+
+        Duck model = new DuckModel();
+        model.proformFly();
+        model.setFlyBehavior(new FlyRocketPowered());
+        model.performFly();
+    }
+}
+</code></pre>
+<p>至此，我们已经完成了鸭子模拟器的设计，我们看一下整体的类结构，如下图所示：<br>
+<img src="/img/2018-7-31/strategy_starge.png" alt="最终结果"></p>
+<p><strong>策略模式定义了算法族，各个算法族分别封装起来，每个算法族内的类可以相互替换，使得算法的变化独立于算法使用者。</strong><br>
+设计原则</p>
+<hr>
+<p>在上面的过程中，我们发现前两种思路存在缺点，而走在我们前面的优秀程序员们就针对这些缺点总结了相应的软件设计原则：<br>
+<strong>设计原则一：分开变化与不变化</strong><br>
+即，找出应用中可能需要变化之处，把它们独立出来，不要和那些不需要变化的代码混在一起。这个原则几乎是每个设计模式背后的精神所在，所有的模式都提供了一套方法让系统中的某部分改变不会影响其它部分。将会变化的部分封装起来，以后可以轻易的针对此部分进行改动或扩充，不影响其他部分。在SimDuck设计过程中我们将变化的fly与quack独立出来，使得整个系统变得更有弹性。<br>
+<strong>设计原则之二：针对接口编程而不是针对实现编程</strong><br>
+在SimDuck原有的设计中，行为来自Duck父类的具体实现，或由子类继承接口后自行实现。这两种做法都是依赖于实现编程。在策略模式实现中我们将行为写在实现FlyBehavior和QuackBehavior的类中。<br>
+针对接口编程的关键在于多态，利用多态，程序员可以实现针对超类型编程，执行时根据实际状况执行真正的行为。“针对超类型编程”可以更加准确的说为变量的声明类型应为超类型，通常为一个抽象类或接口，故只要具体实现次超类型的类所产生的对象，都可以指定给这个变量。即声明类时可以不用理会以后执行的真正的对象类型。<br>
+<strong>设计原则之三：多用组合，少用继承</strong><br>
+使用组合建立系统具有很大的弹性，不仅可将算法族封装成类，更可以在运行时动态地改变行为，只要组合的对象符合正确的额接口标准即可。<br>
+策略模式总结</p>
+<hr>
+<p><strong>使用方式</strong><br>
+一个系统有许多类，区分它们的只是他们直接的行为，在这种情况下，定义算法族,把它们封装成实现同一个接口的类, 使它们可相互替换。<br>
+<strong>使用场景</strong><br>
+1、如果在一个系统里面有许多类，它们之间的区别仅在于它们的行为，那么使用策略模式可以动态地让一个对象在许多行为中选择一种行为。<br>
+2、一个系统需要动态地在几种算法中选择一种。<br>
+3、如果一个对象有很多的行为，如果不用恰当的模式，这些行为就只好使用多重的条件选择语句来实现。<br>
+<strong>策略模式的优缺点</strong><br>
+策略模式的优点：</p>
+<ul>
+<li>算法可以自由的切换，通过实现抽象策略，通过封装角色对其封装，保证对外提供“可自由切换”的策略。</li>
+<li>避免使用多重条件判断，如果有多重策略，那么每个策略只需实现自己的方法，至于采用何种策略，可以通过其他模块决定。</li>
+<li>扩展性良好，可以在现有的系统中任意的加入新的策略，只需继承IStrategy接口，符合OCP原则。</li>
+</ul>
+<p>策略模式缺点：</p>
+<ul>
+<li>策略类数量增多，每个策略都是一个类，复用的可能性很小，类数量增多</li>
+<li>所有的策略都需要对外暴露，上层模块必须知道有哪些策略，然后才能知道采用哪种策略，可以通过使用工厂方法模式、代理模式和享元模式修正。</li>
+</ul>
+<p><strong>注意事项</strong><br>
+如果一个系统的策略多于四个，就需要考虑使用混合模式，解决策略类膨胀的问题。</p>
+<p>本文主要参考自《Head First设计模式》一书<br>
+另参考文章：<br>
+<a href="https://www.cnblogs.com/wolf-sun/p/3534573.html" target="_blank" rel="noopener">https://www.cnblogs.com/wolf-sun/p/3534573.html</a><br>
+<a href="http://www.runoob.com/design-pattern/strategy-pattern.html" target="_blank" rel="noopener">http://www.runoob.com/design-pattern/strategy-pattern.html</a><br>
+<a href="https://www.cnblogs.com/zhanglei93/p/6081019.html" target="_blank" rel="noopener">https://www.cnblogs.com/zhanglei93/p/6081019.html</a></p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/设计模式/设计模式之观察者模式/" data-toggle="tooltip" data-placement="top" title="设计模式之观察者模式">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#设计模式" title="设计模式">设计模式</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/liuyi6">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 刘艺 2019 
+                    <br>
+                    Theme by <a href="https://www.huweihuang.com/">胡伟煌</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a href="http://liuyi6.github.io">刘艺</a> 
+					<!--
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=huweihuang&repo=hexo-theme-huweihuang&type=star&count=true" >
+                    </iframe>
+					-->
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.liuyi6.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.liuyi6.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
