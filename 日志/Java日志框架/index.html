@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Java日志框架 - 刘艺 | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.liuyi6.github.io/日志/Java日志框架/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_bg.jpg')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#日志" title="日志">日志</a>
+                            
+                        </div>
+                        <h1>Java日志框架</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 刘艺 on
+                            2019-04-17
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">刘 艺</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>转载自：<a href="https://www.cnblogs.com/chenhongliang/p/5312517.html" target="_blank" rel="noopener">https://www.cnblogs.com/chenhongliang/p/5312517.html</a></p>
+<h2 id="一-java日志框架概述">一、Java日志框架概述</h2>
+<p>对于一个应用程序来说日志记录是必不可少的一部分。线上问题追踪，基于日志的业务逻辑统计分析等都离不日志。java领域存在多种日志框架，目前常用的日志框架包括Log4j 1，Log4j 2，Commons Logging，Slf4j，Logback，Jul。</p>
+<h3 id="1-日志框架类别">1、日志框架类别</h3>
+<ul>
+<li><strong>Log4j</strong> Apache Log4j是一个基于Java的日志记录工具。它是由Ceki Gülcü首创的，现在则是Apache软件基金会的一个项目。 Log4j是几种Java日志框架之一。</li>
+<li><strong>Log4j 2</strong> Apache Log4j 2是apache开发的一款Log4j的升级产品。</li>
+<li><strong>Commons Logging</strong> Apache基金会所属的项目，是一套Java日志接口，之前叫Jakarta Commons Logging，后更名为Commons Logging。</li>
+<li><strong>Slf4j</strong> 类似于Commons Logging，是一套简易Java日志门面，本身并无日志的实现。（Simple Logging Facade for Java，缩写Slf4j）。</li>
+<li><strong>Logback</strong> 一套日志组件的实现(Slf4j阵营)。</li>
+<li><strong>Jul</strong> (Java Util Logging),自Java1.4以来的官方日志实现。</li>
+</ul>
+<blockquote>
+<p>看了上面的介绍是否会觉得比较混乱，这些日志框架之间有什么异同，都是由谁在维护，在项目中应该如何选择日志框架，应该如何使用? 下文会逐一介绍。</p>
+</blockquote>
+<h3 id="2-日志框架历史">2、日志框架历史</h3>
+<ul>
+<li>
+<p>1996年早期，欧洲安全电子市场项目组决定编写它自己的程序跟踪API(Tracing API)。经过不断的完善，这个API终于成为一个十分受欢迎的Java日志软件包，即Log4j。后来Log4j成为Apache基金会项目中的一员。</p>
+</li>
+<li>
+<p>期间Log4j近乎成了Java社区的日志标准。据说Apache基金会还曾经建议Sun引入Log4j到java的标准库中，但Sun拒绝了。</p>
+</li>
+<li>
+<p>2002年Java1.4发布，Sun推出了自己的日志库JUL(Java Util Logging),其实现基本模仿了Log4j的实现。在JUL出来以前，Log4j就已经成为一项成熟的技术，使得Log4j在选择上占据了一定的优势。</p>
+</li>
+<li>
+<p>接着，Apache推出了Jakarta Commons Logging，JCL只是定义了一套日志接口(其内部也提供一个Simple Log的简单实现)，支持运行时动态加载日志组件的实现，也就是说，在你应用代码里，只需调用Commons Logging的接口，底层实现可以是Log4j，也可以是Java Util Logging。</p>
+</li>
+<li>
+<p>后来(2006年)，Ceki Gülcü不适应Apache的工作方式，离开了Apache。然后先后创建了Slf4j(日志门面接口，类似于Commons Logging)和Logback(Slf4j的实现)两个项目，并回瑞典创建了QOS公司，QOS官网上是这样描述Logback的：The Generic，Reliable Fast&amp;Flexible Logging Framework(一个通用，可靠，快速且灵活的日志框架)。</p>
+</li>
+<li>
+<p>现今，Java日志领域被划分为两大阵营：Commons Logging阵营和Slf4j阵营。<br>
+Commons Logging在Apache大树的笼罩下，有很大的用户基数。但有证据表明，形式正在发生变化。2013年底有人分析了GitHub上30000个项目，统计出了最流行的100个Libraries，可以看出Slf4j的发展趋势更好：</p>
+<p><img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/java_populor_jar.png" alt="java_populor_jar"></p>
+</li>
+<li>
+<p>Apache眼看有被Logback反超的势头，于2012-07重写了Log4j 1.x，成立了新的项目Log4j 2, Log4j 2具有Logback的所有特性。</p>
+</li>
+</ul>
+<h3 id="3-日志框架关系">3、日志框架关系</h3>
+<ul>
+<li>Log4j 2与Log4j 1发生了很大的变化，Log4j 2不兼容Log4j 1。</li>
+<li>Commons Logging和Slf4j是日志门面(门面模式是软件工程中常用的一种软件设计模式，也被称为正面模式、外观模式。它为子系统中的一组接口提供一个统一的高层接口，使得子系统更容易使用)。Log4j和Logback则是具体的日志实现方案。可以简单的理解为接口与接口的实现，调用者只需要关注接口而无需关注具体的实现，做到解耦。</li>
+<li>比较常用的组合使用方式是Slf4j与Logback组合使用，Commons Logging与Log4j组合使用。</li>
+<li>Logback必须配合Slf4j使用。由于Logback和Slf4j是同一个作者，其兼容性不言而喻。</li>
+</ul>
+<h3 id="4-commons-logging与slf4j对比">4、Commons Logging与Slf4j对比</h3>
+<h4 id="commons-logging实现机制">Commons Logging实现机制</h4>
+<blockquote>
+<p>Commons Logging是通过动态查找机制，在程序运行时，使用自己的ClassLoader寻找和载入本地具体的实现。详细策略可以查看commons-logging-*.jar包中的org.apache.commons.logging.impl.LogFactoryImpl.java文件。由于Osgi不同的插件使用独立的ClassLoader，Osgi的这种机制保证了插件互相独立, 其机制限制了Commons Logging在Osgi中的正常使用。</p>
+</blockquote>
+<h4 id="slf4j实现机制">Slf4j实现机制</h4>
+<blockquote>
+<p>Slf4j在编译期间，静态绑定本地的Log库，因此可以在Osgi中正常使用。它是通过查找类路径下org.slf4j.impl.StaticLoggerBinder，然后在StaticLoggerBinder中进行绑定。</p>
+</blockquote>
+<h3 id="5-项目中日志框架选择">5、项目中日志框架选择</h3>
+<p>如果是在一个新的项目中建议使用Slf4j与Logback组合，这样有如下的几个优点。</p>
+<ul>
+<li>Slf4j实现机制决定Slf4j限制较少，使用范围更广。由于Slf4j在编译期间，静态绑定本地的LOG库使得通用性要比Commons Logging要好。</li>
+<li>Logback拥有更好的性能。Logback声称：某些关键操作，比如判定是否记录一条日志语句的操作，其性能得到了显著的提高。这个操作在Logback中需要3纳秒，而在Log4J中则需要30纳秒。LogBack创建记录器（logger）的速度也更快：13毫秒，而在Log4J中需要23毫秒。更重要的是，它获取已存在的记录器只需94纳秒，而Log4J需要2234纳秒，时间减少到了1/23。跟JUL相比的性能提高也是显著的。</li>
+<li>Commons Logging开销更高</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 在使Commons Logging时为了减少构建日志信息的开销，通常的做法是</span><br><span class="line">if(log.isDebugEnabled())&#123;</span><br><span class="line">  log.debug(&quot;User name： &quot; +</span><br><span class="line">    user.getName() + &quot; buy goods id ：&quot; + good.getId());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 在Slf4j阵营，你只需这么做：</span><br><span class="line">log.debug(&quot;User name：&#123;&#125; ,buy goods id ：&#123;&#125;&quot;, user.getName(),good.getId());</span><br><span class="line"></span><br><span class="line"># 也就是说，Slf4j把构建日志的开销放在了它确认需要显示这条日志之后，减少内存和Cup的开销，使用占位符号，代码也更为简洁</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Logback文档免费。Logback的所有文档是全面免费提供的，不象Log4J那样只提供部分免费文档而需要用户去购买付费文档。</li>
+</ul>
+<h2 id="二-slf4j用法">二、Slf4j用法</h2>
+<h3 id="1-slf4j与其它日志组件的关系说明">1、Slf4j与其它日志组件的关系说明</h3>
+<ul>
+<li>Slf4j的设计思想比较简洁，使用了Facade设计模式，Slf4j本身只提供了一个slf4j-api-version.jar包，这个jar中主要是日志的抽象接口，jar中本身并没有对抽象出来的接口做实现。</li>
+<li>对于不同的日志实现方案(例如Logback，Log4j…)，封装出不同的桥接组件(例如logback-classic-version.jar，slf4j-log4j12-version.jar)，这样使用过程中可以灵活的选取自己项目里的日志实现。</li>
+</ul>
+<h3 id="2-slf4j与其它日志组件调用关系图">2、Slf4j与其它日志组件调用关系图</h3>
+<p><img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-bind.png" alt="slf4j-bind"></p>
+<h3 id="3-slf4j与其他各种日志组件的桥接说明">3、Slf4j与其他各种日志组件的桥接说明</h3>
+<table>
+<thead>
+<tr>
+<th>jar包名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>slf4j-log4j12-1.7.13.jar</strong></td>
+<td>Log4j1.2版本的桥接器，你需要将Log4j.jar加入Classpath。</td>
+</tr>
+<tr>
+<td><strong>slf4j-jdk14-1.7.13.jar</strong></td>
+<td>java.util.logging的桥接器，Jdk原生日志框架。</td>
+</tr>
+<tr>
+<td><strong>slf4j-nop-1.7.13.jar</strong></td>
+<td>NOP桥接器，默默丢弃一切日志。</td>
+</tr>
+<tr>
+<td><strong>slf4j-simple-1.7.13.jar</strong></td>
+<td>一个简单实现的桥接器，该实现输出所有事件到System.err. 只有Info以及高于该级别的消息被打印，在小型应用中它也许是有用的。</td>
+</tr>
+<tr>
+<td><strong>slf4j-jcl-1.7.13.jar</strong></td>
+<td>Jakarta Commons Logging 的桥接器. 这个桥接器将Slf4j所有日志委派给Jcl。</td>
+</tr>
+<tr>
+<td><strong>logback-classic-1.0.13.jar(requires logback-core-1.0.13.jar)</strong></td>
+<td>Slf4j的原生实现，Logback直接实现了Slf4j的接口，因此使用Slf4j与Logback的结合使用也意味更小的内存与计算开销</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>具体的接入方式参见下图<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-concrete-bindings1.png" alt="slf4j-concrete-bindings1"></li>
+</ul>
+<h2 id="三-slf4j源码分析">三、Slf4j源码分析</h2>
+<h3 id="1-slf4j-api-versionjar中几个核心类与接口">1、slf4j-api-version.jar中几个核心类与接口</h3>
+<table>
+<thead>
+<tr>
+<th>类与接口</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>org.slf4j.LoggerFactory(class)</td>
+<td>给调用方提供的创建Logger的工厂类，在编译时绑定具体的日志实现组件</td>
+</tr>
+<tr>
+<td>org.slf4j.Logger(interface)</td>
+<td>给调用方提供的日志记录抽象方法，例如debug(String msg),info(String msg)等方法</td>
+</tr>
+<tr>
+<td>org.slf4j.ILoggerFactory(interface)</td>
+<td>获取的Logger的工厂接口，具体的日志组件实现此接口</td>
+</tr>
+<tr>
+<td>org.slf4j.helpers.NOPLogger(class)</td>
+<td>对org.slf4j.Logger接口的一个没有任何操作的实现，也是Slf4j的默认日志实现</td>
+</tr>
+<tr>
+<td>org.slf4j.impl.StaticLoggerBinder(class)</td>
+<td>与具体的日志实现组件实现的桥接类，具体的日志实现组件需要定义org.slf4j.impl包，并在org.slf4j.impl包下提供此类，注意在slf4j-api-version.jar中不存在org.slf4j.impl.StaticLoggerBinder，在源码包slf4j-api-version-source.jar中才存在此类</td>
+</tr>
+</tbody>
+</table>
+<p>Slf4j调用过程源码分析，只加入slf4j-api-version.jar，不加入任何实现包</p>
+<p>示例代码参见：<a href="https://github.com/chlsmile/slf4j-demo" target="_blank" rel="noopener">https://github.com/chlsmile/slf4j-demo</a></p>
+<h4 id="pom核心配置如下">pom核心配置如下</h4>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">  &lt;!--只有slf4j-api依赖--&gt;</span><br><span class="line">  &lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.slf4j&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;slf4j-api&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.7.13&lt;/version&gt;</span><br><span class="line">  &lt;/dependency&gt;</span><br><span class="line">&lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="程序入口类如下">程序入口类如下</h4>
+<p><img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-0.png" alt="slf4j-0"></p>
+<h4 id="源码分析">源码分析</h4>
+<ul>
+<li>
+<p>1)调用LoggerFactory的getLogger()方法创建Logger<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-1-getLogger.png" alt="slf4j-1-getLogger"></p>
+</li>
+<li>
+<p>2)调用LoggerFactory的getILoggerFactory方法来创建ILoggerFactory<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-2-getILoggerFactory.png" alt="slf4j-2-getILoggerFactory"></p>
+</li>
+<li>
+<p>3)调用LoggerFactory的performInitialization方法来进行初始化<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-3-performInitialization.png" alt="slf4j-3-performInitialization"></p>
+</li>
+<li>
+<p>4)调用LoggerFactory的bind()方法<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-4-bind.png" alt="slf4j-4-bind"></p>
+</li>
+<li>
+<p>5)调用LoggerFactory的findPossibleStaticLoggerBinderPathSet()方法获取StaticLoggerBinderPath集合<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-5-findPossibleStaticLoggerBinderPathSet.png" alt="slf4j-5-findPossibleStaticLoggerBinderPathSet"></p>
+</li>
+<li>
+<p>6)调用LoggerFactory的reportMultipleBindingAmbiguity()方法，记录绑定的StaticLoggerBinder信息<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-6-bind-1.png" alt="slf4j-6-bind-1"></p>
+</li>
+<li>
+<p>7)LoggerFactory的reportMultipleBindingAmbiguity()方法<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-7-bind-reportMultipleBindingAmbiguity.png" alt="slf4j-9-bind-NoClassDefFoundError-report"></p>
+</li>
+<li>
+<p>8)LoggerFactory的bind()方法找不到StaticLoggerBinder，抛出NoClassDefFoundError异常<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-8-bind-NoClassDefFoundError.png" alt="slf4j-8-bind-NoClassDefFoundError"></p>
+</li>
+<li>
+<p>9)LoggerFactory的bind()方法捕获NoClassDefFoundError异常，匹配到StaticLoggerBinder关键词记录信息到控制台<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-9-bind-NoClassDefFoundError-report.png" alt="slf4j-9-bind-NoClassDefFoundError-report"></p>
+</li>
+<li>
+<p>10)LoggerFactory的performInitialization()方法内部调用bind()方法结束<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-10-performInitialization-finished.png" alt="slf4j-10-performInitialization-finished"></p>
+</li>
+<li>
+<p>11)LoggerFactory的getLogger()方法内部getILoggerFactory()方法调用完成，创建出NOPLoggerFactory，然后由NOPLoggerFactory调用内部的getLogger()方法，创建出NOPLogger<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-11-getILoggerFactory-nop_fallback_initialization.png" alt="slf4j-11-getILoggerFactory-nop_fallback_initialization"></p>
+<p><img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-12-pre-getLogger.png" alt="slf4j-12-pre-getLogger"></p>
+<p><img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-13-NOPLoggerFactory-getLogger.png" alt="slf4j-13-NOPLoggerFactory-getLogger"></p>
+<p><img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-14-NOPLogger-new.png" alt="slf4j-14-NOPLogger-new"></p>
+</li>
+<li>
+<p>12)App类内部的logger实际为NOPLogger,<a href="http://xn--logger-2w4ox67l.info" target="_blank" rel="noopener">调用logger.info</a>()方法实际调用的是NOPLogger的info方法<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-15-App-logger-info.png" alt="slf4j-15-App-logger-info"></p>
+<p><img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-16-NOPLogger-info.png" alt="slf4j-16-NOPLogger-info"></p>
+</li>
+</ul>
+<h3 id="2-slf4j调用过程源码分析">2、Slf4j调用过程源码分析</h3>
+<p>加入slf4j-api-version.jar，与Logback组件</p>
+<blockquote>
+<p>Slf4j作为门面采用Logback作为实现或者采用其它上面提到过的组件作为实现类似，这里只分析采用Logback组件作为实现</p>
+</blockquote>
+<p>示例代码参见：<a href="https://github.com/chlsmile/slf4j-logback-demo" target="_blank" rel="noopener">https://github.com/chlsmile/slf4j-logback-demo</a></p>
+<h4 id="pom核心配置如下">pom核心配置如下</h4>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;org.slf4j&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;slf4j-api&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;1.7.13&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;!--logback-classic依赖logback-core，会自动级联引入--&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;logback-classic&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;1.2.3&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">  &lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
+<p>程序入口类同上</p>
+<h4 id="源码分析">源码分析</h4>
+<ul>
+<li>1)2)3)4)同上</li>
+<li>5)调用LoggerFactory的findPossibleStaticLoggerBinderPathSet()方法获取StaticLoggerBinderPath集合<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-logabck-001.png" alt="slf4j-logabck-001"></li>
+<li>6)调用LoggerFactory的bind()方法的staticLoggerBinderPathSet集合对象赋值<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-logabck-002-staticLoggerBinderPathSet.png" alt="slf4j-logabck-002-staticLoggerBinderPathSet"></li>
+<li>7)在LoggerFactory的bind()方法中调用loback包下的StaticLoggerBinder创建单例对象<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-logabck-003-StaticLoggerBinder.png" alt="slf4j-logabck-003-StaticLoggerBinder"></li>
+<li>8)在LoggerFactory的bind()方法中调用reportActualBinding()记录日志加载信息<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-logabck-004-pre-reportActualBinding.png" alt="slf4j-logabck-004-pre-reportActualBinding"><br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-logabck-005-reportActualBinding-detail.png" alt="slf4j-logabck-005-reportActualBinding-detail"></li>
+<li>9)LoggerFactory中INITIALIZATION_STATE的值为SUCCESSFUL_INITIALIZATION，调用StaticLoggerBinder的单例对象获取ILoggerFactory<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-logabck-006.png" alt="slf4j-logabck-006"><br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-logabck-007-StaticLoggerBinder-getLoggerFactory.png" alt="slf4j-logabck-007-StaticLoggerBinder-getLoggerFactory"></li>
+<li>10)此时LoggerFactory中的getLogger()方法中获取到的ILoggerFactory实际上是logback jar下的LoggerContext<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-logabck-008.png" alt="slf4j-logabck-008"></li>
+<li>11)此时LoggerFactory调用getLogger()方法获取到的Logger实际上是logback jar下的Logger<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-logabck-009.png" alt="slf4j-logabck-009"><br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-logabck-010.png" alt="slf4j-logabck-010"></li>
+</ul>
+<h3 id="3-slf4j调用过程源码分析">3、Slf4j调用过程源码分析</h3>
+<p>加入slf4j-api-version.jar，同时加入多种日志实现组件</p>
+<blockquote>
+<p>在项目中如果用slf4j-api作为日志门面，有多个日志实现组件同时存在，例如同时存在Logback，slf4j-log4j12，slf4j-jdk14，slf4j-jcl四种实现，则在项目实际运行中，Slf4j的绑定选择绑定方式将有Jvm确定，并且是随机的，这样会和预期不符，实际使用过程中需要避免这种情况。</p>
+</blockquote>
+<p>示例代码参见：<a href="https://github.com/chlsmile/slf4j-logback-log4j-demo" target="_blank" rel="noopener">https://github.com/chlsmile/slf4j-logback-log4j-demo</a></p>
+<h4 id="pom核心配置如下">pom核心配置如下</h4>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">   &lt;dependency&gt;</span><br><span class="line">     &lt;groupId&gt;junit&lt;/groupId&gt;</span><br><span class="line">     &lt;artifactId&gt;junit&lt;/artifactId&gt;</span><br><span class="line">     &lt;version&gt;4.11&lt;/version&gt;</span><br><span class="line">   &lt;/dependency&gt;</span><br><span class="line">   &lt;dependency&gt;</span><br><span class="line">     &lt;groupId&gt;org.slf4j&lt;/groupId&gt;</span><br><span class="line">     &lt;artifactId&gt;slf4j-log4j12&lt;/artifactId&gt;</span><br><span class="line">     &lt;version&gt;1.7.25&lt;/version&gt;</span><br><span class="line">   &lt;/dependency&gt;</span><br><span class="line">   &lt;dependency&gt;</span><br><span class="line">     &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;</span><br><span class="line">     &lt;artifactId&gt;logback-classic&lt;/artifactId&gt;</span><br><span class="line">     &lt;version&gt;1.2.3&lt;/version&gt;</span><br><span class="line">   &lt;/dependency&gt;</span><br><span class="line">   &lt;dependency&gt;</span><br><span class="line">     &lt;groupId&gt;org.slf4j&lt;/groupId&gt;</span><br><span class="line">     &lt;artifactId&gt;slf4j-jdk14&lt;/artifactId&gt;</span><br><span class="line">     &lt;version&gt;1.7.25&lt;/version&gt;</span><br><span class="line">   &lt;/dependency&gt;</span><br><span class="line">   &lt;dependency&gt;</span><br><span class="line">     &lt;groupId&gt;org.slf4j&lt;/groupId&gt;</span><br><span class="line">     &lt;artifactId&gt;slf4j-jcl&lt;/artifactId&gt;</span><br><span class="line">     &lt;version&gt;1.7.25&lt;/version&gt;</span><br><span class="line">   &lt;/dependency&gt;</span><br><span class="line"> &lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
+<p>程序入口类同上</p>
+<h4 id="源码分析">源码分析</h4>
+<ul>
+<li>基本步骤同上，这里只追踪主要不同点</li>
+<li>1)追踪LoggerFactory的bind()方法内部调用findPossibleStaticLoggerBinderPathSet()方法后，从classpath下4个jar包内找到StaticLoggerBinder<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-multiple-bindings-1.png" alt="slf4j-multiple-bindings-1"></li>
+<li>2)此时LoggerFactory的bind()方法内部调用reportMultipleBindingAmbiguity()方法，给出警告信息classpath下同时存在多个StaticLoggerBinder,JVM会随机选择一个StaticLoggerBinder<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-multiple-bindings-2.png" alt="slf4j-multiple-bindings-2"></li>
+</ul>
+<h3 id="4-使用slf4时如何桥接遗留的api">4、使用Slf4时如何桥接遗留的api</h3>
+<p>在实际环境中我们经常会遇到不同的组件使用的日志框架不同的情况，例如Spring Framework使用的是日志组件是Commons Logging，XSocket依赖的则是Java Util Logging。当我们在同一项目中使用不同的组件时应该如果解决不同组件依赖的日志组件不一致的情况呢？现在我们需要统一日志方案，统一使用Slf4j，把他们的日志输出重定向到Slf4j，然后Slf4j又会根据绑定器把日志交给具体的日志实现工具。Slf4j带有几个桥接模块，可以重定向Log4j，JCL和java.util.logging中的Api到Slf4j。</p>
+<h4 id="遗留的api桥接方案">遗留的api桥接方案</h4>
+<table>
+<thead>
+<tr>
+<th>jar包名</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>log4j-over-slf4j-version.jar</strong></td>
+<td>将Log4j重定向到Slf4j</td>
+</tr>
+<tr>
+<td><strong>jcl-over-slf4j-version.jar</strong></td>
+<td>将Commons Logging里的Simple Logger重定向到slf4j</td>
+</tr>
+<tr>
+<td><strong>jul-to-slf4j-version.jar</strong></td>
+<td>将Java Util Logging重定向到Slf4j</td>
+</tr>
+</tbody>
+</table>
+<h4 id="桥接方式参见下图">桥接方式参见下图</h4>
+<p><img src="http://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j_brige.png" alt="pic3"></p>
+<h4 id="使用slf4j桥接注意事项">使用Slf4j桥接注意事项</h4>
+<ul>
+<li>在使用Slf4j桥接时要注意避免形成死循环，在项目依赖的jar包中不要存在以下情况。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>多个日志jar包形成死循环的条件</th>
+<th>产生原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>log4j-over-slf4j.jar和slf4j-log4j12.jar同时存在</strong></td>
+<td>由于slf4j-log4j12.jar的存在会将所有日志调用委托给log4j。但由于同时由于log4j-over-slf4j.jar的存在，会将所有对log4j api的调用委托给相应等值的slf4j,所以log4j-over-slf4j.jar和slf4j-log4j12.jar同时存在会形成死循环</td>
+</tr>
+<tr>
+<td><strong>jul-to-slf4j.jar和slf4j-jdk14.jar同时存在</strong></td>
+<td>由于slf4j-jdk14.jar的存在会将所有日志调用委托给jdk的log。但由于同时jul-to-slf4j.jar的存在，会将所有对jul api的调用委托给相应等值的slf4j，所以jul-to-slf4j.jar和slf4j-jdk14.jar同时存在会形成死循环</td>
+</tr>
+</tbody>
+</table>
+<h3 id="5-遗留api桥接死循环源码分析源码">5、遗留api桥接死循环源码分析源码</h3>
+<blockquote>
+<p>这里以项目中集成log4j-over-slf4j与slf4j-log4j12为例，其它组合形成死循环原理相类似。</p>
+</blockquote>
+<p>示例代码参见：<a href="https://github.com/chlsmile/slf4j-Infinite-loop-demo" target="_blank" rel="noopener">https://github.com/chlsmile/slf4j-Infinite-loop-demo</a></p>
+<p>程序入口类同上</p>
+<h4 id="源码分析">源码分析</h4>
+<blockquote>
+<p>基本步骤同上，调用链路LoggerFactory.getLogger()&gt;LoggerFactory.getILoggerFactory()&gt; LoggerFactory.performInitialization()&gt;LoggerFactory.bind()</p>
+</blockquote>
+<ul>
+<li>1)LoggerFactory.bind()方法内部调用StaticLoggerBinder.getSingleton()获取StaticLoggerBinder实例<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-Infinite-loop-1.png" alt="slf4j-Infinite-loop-1"></li>
+<li>2)StaticLoggerBinder调用构造方法内部调用Log4jLoggerFactory构造方法创建ILoggerFactory<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-Infinite-loop-2.png" alt="slf4j-Infinite-loop-2"></li>
+<li>3)Log4jLoggerFactory加载内部static代码块，校验出classpath下存在org.apache.log4j.Log4jLoggerFactory，抛出异常<br>
+<img src="https://cnblogpic.oss-cn-qingdao.aliyuncs.com/blogpic/java_log/slf4j-Infinite-loop-3.png" alt="slf4j-Infinite-loop-3"></li>
+</ul>
+<h2 id="四-排除第三方包的日志依赖">四、排除第三方包的日志依赖</h2>
+<p>在实际使用过程中，项目会根据需要引入一些第三方组件，例如常用的Spring，而Spring本身的日志实现使用了Commons Logging，我们又想使用Slf4j+Loback组合，这时候需要在项目中将Commons Logging排除掉，通常会用到以下3种方案，3种方案各有利弊，可以根据项目的实际情况选择最适合自己项目的解决方案。</p>
+<h3 id="方案一maven的exclusion">方案一：maven的exclusion</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-core&lt;/artifactId&gt;</span><br><span class="line">    &lt;exclusions&gt;</span><br><span class="line">        &lt;exclusion&gt;</span><br><span class="line">            &lt;groupId&gt;commons-logging&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;commons-logging&lt;/artifactId&gt;</span><br><span class="line">        &lt;/exclusion&gt;</span><br><span class="line">    &lt;/exclusions&gt;</span><br><span class="line">    &lt;version&gt;$&#123;springframework.version&#125;&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<p>这种方案优点是exclusion是maven原生提供的，不足之处是如果有多个组件都依赖了commons-logging，则需要在很多处增加，使用起来不太方便</p>
+<h3 id="方案二声明commons-logging的scope为provided">方案二：声明commons-logging的scope为provided</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;commons-logging&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;commons-logging&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;1.1.1&lt;/version&gt;</span><br><span class="line">  &lt;scope&gt;provided&lt;/scope&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;org.slf4j&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;jcl-over-slf4j&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;1.8.0-beta2&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<p>这种方案在调试代码时还是有可能导致IDE将commons-logging放置在classpath下，从而导致程序运行时出现异常</p>
+<h3 id="方案三在maven私服中增加虚拟版本号">方案三：在maven私服中增加虚拟版本号</h3>
+<p>在maven私服中增加类似于99.0-does-not-exist这种虚拟的版本号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;    </span><br><span class="line">    &lt;groupId&gt;commons-logging&lt;/groupId&gt;    </span><br><span class="line">    &lt;artifactId&gt;commons-logging&lt;/artifactId&gt;    </span><br><span class="line">    &lt;version&gt;99.0-does-not-exist&lt;/version&gt;    </span><br><span class="line">&lt;/dependency&gt; </span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;org.slf4j&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;jcl-over-slf4j&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;1.8.0-beta2&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<p>这种方案好处是声明方式比较简单，用IDE调试代码时也不会出现问题，不足之处是99.0-does-not-exist这种版本是maven中央仓库中是不存在的，需要发布到自己的maven私服中。</p>
+<h2 id="总结">总结</h2>
+<p>由于历史原因JDK自身提供的Log组件出现的较晚，导致Jdk提供Log组件时第三方社区的日志组件已经比较稳定成熟。经过多年的发展Slf4j+Logback与组合，Commons Logging与Log4j组合两大阵营已经基本成为了Java项目开发的标准，建议在新的项目开发中从这两种方案中选择适合自己项目的组合方案。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/Spring/Spring(六)之事务/" data-toggle="tooltip" data-placement="top" title="Spring(六)之事务">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#日志" title="日志">日志</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/liuyi6">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 刘艺 2019 
+                    <br>
+                    Theme by <a href="https://www.huweihuang.com/">胡伟煌</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a href="http://liuyi6.github.io">刘艺</a> 
+					<!--
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=huweihuang&repo=hexo-theme-huweihuang&type=star&count=true" >
+                    </iframe>
+					-->
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.liuyi6.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.liuyi6.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
