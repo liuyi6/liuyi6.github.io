@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          JVM之垃圾回收机制 - 刘艺 | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.liuyi6.github.io/JVM/JVM之垃圾回收机制/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_bg.jpg')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#JVM" title="JVM">JVM</a>
+                            
+                        </div>
+                        <h1>JVM之垃圾回收机制</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 刘艺 on
+                            2018-09-23
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">刘 艺</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="前言">前言</h2>
+<p>很多人将垃圾收集(Garbage Collection)视为Java的伴生产物，实际1960年诞生的Lisp是第一门真正使用内存动态分配与垃圾手机技术的语言。在目前看来，内存的动态分配与内存回收已经相当成熟，但了解GC与内存分配还是非常有必要的，当排查内存溢出、内存泄漏问题，当垃圾手机称为系统高并发的瓶颈时，就需要我们对其实施必要的监控与调节。<br>
+在前面的篇章中我们了解到Java的运行时区域中的程序计数器、虚拟机栈、本地方法栈的内存分配与回收具有确定性，但Java堆不同，这部分内存的分配与回收都是动态的，婴儿垃圾收集器关注的就是这部分内存。<br>
+对象的生与死</p>
+<hr>
+<p>堆中几乎存放着Java中的所有的对象实例，但在对堆进行回收前，首先要确定对象的“生死”，下面就这方面进行讲解：</p>
+<h3 id="引用记数算法"><strong>引用记数算法</strong></h3>
+<p>很多书籍中判断对象存活方法的判断：给对象中添加引用计数器，每当一个地方引用它，计数器值加1；当引用失效，计数器值减1；任何时刻都为0的对象时不能再使用的。引用计数算法应用于python,FlashPlayer及Squirrel中，但Java却没有选用引用计数器算法管理内存，最主要的原因是<strong>它很难解决对象之间相互循环引用的问题</strong>。</p>
+<h3 id="根搜索算法"><strong>根搜索算法</strong></h3>
+<p>主流的商用程序语言(Java、C#、Lisp)都使用根搜索算法(GC Roots Tracing)判定对象是否存活，又称为可达性分析算法。算法的基本思路是通过一系列名为&quot;GC Roots&quot;的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链(Reference Chain)，当一个对象GC Roots没有任何引用链相连(用图论的表示从GC Roots都这个对象不可达)时，则证明此对象不可用。如下图所示，object4,object5,object6相互关联，但到GC Roots不可达，因而可判定为可回收对象。<br>
+<img src="/img/2018-07/jvm_GC_serach.png" alt=""><br>
+Java中，可作为GC Roots的对象一般包括下面几种：</p>
+<ul>
+<li>虚拟机栈(栈帧中的本地变量表)中的引用的对象</li>
+<li>方法区中的类静态属性的引用对象</li>
+<li>方法区中的常量引用的对象</li>
+<li>本地方法栈中的JNI(Native方法)的引用对象。</li>
+</ul>
+<h3 id="引用的理解"><strong>引用的理解</strong></h3>
+<p>无论时引用计数算法还是根搜索算法，判断对象存活都与引用相关。JDK1.2之前对Java的引用定义：如果reference类型的数据中存储的数值代表另一块内存的起始地址，称这块内存代表一个引用。这种定义过于狭隘，一个对象这种定义下只有引用或没被引用两种状态，这再很多应用场景下是无法描述的。JDK1.2之后，Java对应用概念进行了扩充，将引用分为强引用(Reference)、软引用(Soft Reference)、弱引用(Weak Reference)、需引用(Phantom Reference)四种，且强度依此减弱。</p>
+<ol>
+<li>强引用<br>
+强引用是指程序代码之中普遍存在的，类似“Object obj = new Object()”的引用，只要强引用存在，垃圾收集器永远不会回收掉被引用的对象。</li>
+<li>软引用<br>
+软引用用来描述一些非必需的有用对象。在系统将要发生内存溢出异常之前，会把软引用关联的对象列进回收范围之中并进行第二次回收。若此次回收没有足够的内存，才会抛出内存溢出异常。</li>
+<li>弱应用<br>
+弱引用描述非必需对象，被弱引用关联的对象只能生存到下一次垃圾收集发生前，当垃圾回收时，无论内存是否足够，都会回收掉只被若引用关联的对象。</li>
+<li>虚引用<br>
+虚引用也称为幽灵引用或幻影引用，一个对象是否有虚引用的存在，完全不会对其生存时间构成影响，也无法通过虚引用取得一个对象实例。对对象设置虚引用关联的唯一目的是希望在这个对象被收集器收集回收时收到一个系统通知。JDK1.2之后，提供了PhantomReference类来实现虚引用。</li>
+</ol>
+<h3 id="生存死亡的判断"><strong>生存死亡的判断</strong></h3>
+<p>在根搜索算法中不可达的对象，并非是“必死”的，暂时处于“缓刑”阶段一个对象正式死亡，要经理至少两次标记过程。首先如果在进行根搜索后没有发现与GC Roots相连的引用链，它将会被第一次标记并进行一次筛选，筛选的条件是该对象是否有必要执行finalize()方法。当对象没有覆盖finalize()方法，或finalize()方法已被虚拟机调用过，则虚拟机认定该对象为“没有必要执行”。若该对象被判定为有必要执行finalize()方法，那对象将被放置在一个名为F-Quenue队列中，并在稍后由一条虚拟机自动建立的，低优先级的Finalizer线程执行。这里的“执行”是指虚拟机会触发finalize()方法，但并不承诺会等待方法运行结束。<br>
+这是因为若在执行过程中出现某对象的finalize()方法执行缓慢或发生死循环，队列中的其他对象将会永久处于等待状态，甚至导致内存回收系统崩溃。finalize()方法是对象逃脱死亡的最后一次机会，稍后GC将对F-quene的对象进行第二次小规模标记，若要逃脱死亡命运，只需重新与引用链上的任意对象关联即可，如此，在第二次标记时它将被移出即将回收集合。还没有逃脱的对象只能静静等待死亡的到来。<br>
+<strong>回收方法区</strong><br>
+很多人认为方法区(HotSpot中的永久代)是没有垃圾收集的，Java虚拟机规范中不要求在方法区实现垃圾收集，且在方法区进行垃圾收集的性能低。永久代的垃圾收集处理的主要是：废弃常量和无用的类。回收常量与Java堆中对象相似。常量池中的回收是判断是否由其他对象引用常量池中的常量，若没有，若此时发生内存回收，此常量将被清出常量池。而对于无用的类的判断条件则相对苛刻，需满足三个条件：</p>
+<ol>
+<li>此类所有实例已被回收，即堆中不存在此类的任何实例</li>
+<li>加载该类的ClassLoader已被回收</li>
+<li>此类对应的java.lang.Class对象没有任何地方被引用，无法在任何地方通过反射访问该类的方法。</li>
+</ol>
+<p>虚拟机可堆满足条件的无用类进行回收，但具体是否回收，需虚拟机提供的参数-Xnoclassgc进行控制，hai可查看类的加载与卸载信息，在大量使用反射、动态代理等场景及频繁定义ClassLoader的场景需要具备类卸载功能，保证永久代不会溢出。</p>
+<h2 id="垃圾收集算法">垃圾收集算法</h2>
+<p>下面就几种算法的思想及发展过程进行介绍。</p>
+<h3 id="标记-清除算法"><strong>标记 — 清除算法</strong></h3>
+<p>标记清除算法(Mark-Sweep)算法是最基础的收集算法，它分为“标记”和“清除”两部分：首先标记出所有需回收的对象，在标记完成后统一回收掉所有被标记的对象，他的标记过程就是对象的标记判定的过程。后续的收集算法都是基于这种思路并堆其缺点进行改进得到的。它的缺点有两个：效率，标记与清除的过程效率都不高；空间，标记清除后产生大量的不连续内存碎片，空间碎片过多可能导致程序运行分配较大对象时无法找到足够的连续内存提前出发另一次垃圾收集。下图为标记清除算法示意图：<br>
+<img src="/img/2018-07/jvm_GC_mark-sweep.png" alt=""></p>
+<h3 id="复制算法"><strong>复制算法</strong></h3>
+<p>为解决效率问题，出现复制收集算法(Copying)，它将可用内存按容量划分为大小相等的两块，每次使用其中一块，当一块用完，将活着的对象复制到另一块上，将已使用过的内存空间一此清理掉。使得每次都是堆其中一块进行内存回收，就可以忽略了内存碎片的复杂情况，只需移动堆顶指针，按顺序分配内存。算法的代价是将内存缩小为原来的一半，算法执行过程如图所示。<br>
+<img src="/img/2018-07/jvm_GC_copying.png" alt=""><br>
+当前商业虚拟机采用此算法回收新生代，由于新生代的对象98%是朝生夕死，因而秩序将内存分为一块较大的Eden空间和两块较小的Survivor空间，每次使用Eden和一块Survior。回收时，将Eden和Survivor存活的对象一次拷贝到另一块Survivor空间上，最后清理掉Eden和刚才使用过的Survivor空间。Eden和Survivor大小比例为8：1，每次新生代可用内存空间为90%，但98%回收只是一般情况，若Survivor空间不够用，需要依赖其他内存(老年代)进行分配担保，即通过分配担保机制进入老年代。</p>
+<h3 id="标记-整理算法"><strong>标记 — 整理算法</strong></h3>
+<p>复制收集算法在对象存活率较高时就执行较多的复制操作，效率将会变低，更关键的是，需要额外的空间进行分配担保，以应对所有对象都存活的极端情况，所以老年代一般不直接选用此算法。针对老年机的特点，又提出了”标记整理(Mark-Compact)“算法，标记过程与”标记-清除算法一致“，后续步骤是直接堆可回收的对象进行清理，让所有存活对象向一端移动，直接清理掉端界面以外的内存，标记-整理算法示意图如图所示：<br>
+<img src="/img/2018-07/jvm_GC_mark-compact.png" alt=""></p>
+<h3 id="分代收集算法"><strong>分代收集算法</strong></h3>
+<p>目前的商用虚拟机垃圾收集采用的是“分代收集(Generational Collection)”算法，它根据对象的存活周期的不同将内存划分为几块，一般把Java堆分为新生代和老年代，可根据各个年代的特点采用最合适的收集算法。在新生代中，对象死亡多，存活少，采用复制算法，付出少量复制成本完成收集。老年代存活率高、没有额外空间进行分配担保，使用”标记-整理“或”标记-清理“孙法进行回收。</p>
+<h2 id="垃圾收集器">垃圾收集器</h2>
+<p>垃圾收集器作为内存回收的具体表现，Java虚拟机规范并未对垃圾收集器的实现做规定，因而不同版本的虚拟机有很大区别，因而我们在这里主要讨论基于Sun HotSpot虚拟机1.6版本Update22,此虚拟机包含的收集器如下所示：<br>
+<img src="/img/2018-07/jvm_GC_Hotspot6.png" alt=""><br>
+如图展示了7种作用于不同分代的收集器，若两个收集器之间存在连线，说明他们可以搭配使用。我们堆收集器进行比较就是为了针对具体的情况选择最合适的收集器。</p>
+<h3 id="serial收集器">Serial收集器</h3>
+<p>Serial是最基本，最早的收集器，曾是JDK1.3.1之前的虚拟机新生代唯一选择，这个收集器是单线程收集器，它不仅仅只会使用一个单线程或一条收集线程区完成垃圾收集工作，更重要的是当进行垃圾收集时，其他工作线程必须暂停，直到收集结束。下图为Serial/Serial Old收集器运行过程：<br>
+<img src="/img/2018-07/jvm_GC_Hotspot_serial.png" alt=""><br>
+从JDK1.3到JDK1.7,HoSpot虚拟机开发团队一直在为消除或减少工作线程因内存回收而导致停顿的现象而努力着，从Serial收集器，到Parallel收集器，再到Concurrent Mark Sweep(CMS)用户线程停顿时间不断缩减，但此现象并未完全消除。<br>
+到目前为止，Serial是虚拟机运行在Client模式下的默认的新生代收集器，它也有很多优点：简单高效(与其他收集器单线程相比)，对于限定单个CPU，由于没有线程交互开销，垃圾收集获得最高的单线程收集效率。Serial收集器是运行在Client模式下的虚拟机的好的选择。</p>
+<h3 id="parnew收集器">ParNew收集器</h3>
+<p>ParNew收集器是Serial收集器的多线程版本，除使用多线程进行垃圾收集外，其余行为包括扣Serial收集器可用的控制参数、收集算法、Stop The World 、对象分配规则、回收策略等与Serial完全一样。ParNew收集器的工作过程如下图所示：<br>
+<img src="/img/2018-07/jvm_GC_Hotspot_parnew.png" alt=""><br>
+ParNew是运行在Server模式下虚拟机种的首选新生代收集器，因为除了Serial收集器，目前只有它能够与CMS收集器配合工作。ParNew收集器由于存在线程交互，可能不会有比Serial更好的效果但随着CPU数量的增加，它对于GC时系统资源的利用有很大好处。<br>
+此处区分以下并行和并发：<br>
+并行(Parallel):多条垃圾收集线程并行工作，此时用户线程仍处于等待状态。<br>
+并发(Concurrent):指用户线程与垃圾收集线程同时执行(不一定并行，可能交替执行)，用户程序继续运行，垃圾收集程序运行在另一个CPU上。</p>
+<h3 id="parallel-scavenge收集器">Parallel Scavenge收集器</h3>
+<p>Parallel Scavenge收集器是一个新生代收集器，它时复制算法的收集器，也是并行的多线程收集器，它的关注点与其他收集器不同,其它收集器尽可能缩短用户线程停顿时间，Parallel Scavenge收集器则是达到一个可控制的吞吐量(吞吐量=运行用户代码时间/(运行代码时间+垃圾收集时间))。停顿时间越短越适合需要用户交互程序，良好相应速度能提升用户体验；高吞吐量则可以最高效率的利用CPU时间，尽快完成程序任务，适用于后台运算而不需要太多交互的任务。</p>
+<h3 id="serial-old收集器">Serial Old收集器</h3>
+<p>Serial Old是Serial的老年版本，它也是单线程收集器，使用“标记-整理“算法。它主要是被Client模式下的虚拟机使用。在Server模式下，它有两个用途：一是在JDK1.5及之前的本本种与Parallel Scavenge收集器搭配使用；二是作为CMS收集器的后备份预案，在并发收集发生Corrent Model Failure时候使用。Serial Old的工作过程如下图所示：<br>
+<img src="/img/2018-07/jvm_GC_Hotspot_serialold.png" alt=""></p>
+<h3 id="parallel-old收集器">Parallel Old收集器</h3>
+<p>Parallel Old使用多线程和“标记-整理”算法，于JDK1.6开始提供，是Parallel Scavenge收集器的老年代版本。在其出现前，老年代除了Serial old外别无选择，由于Serial old的“拖累”，使用Parallel Scavenge未必能够在整体上实现吞吐量最大化的效果。Parallel Old出现后，“吞吐量”的黄金组合出现了，在注重吞吐量及CPU资源的敏感场合，优先考虑Parallel Old与Parallel Scavenge收集器组合。Parallel Old工作过程如图 所示：<br>
+![](/img/2018-07/jvm_GC_Parallel Old.png)</p>
+<h3 id="cms收集器">CMS收集器</h3>
+<p>CMS(Concurrent Mark Sweep)收集器是一种以获取最短回收停顿时间为目标的收集器。CMS收集器应用于那些重视服务响应速度，系统停顿短的场景。CMS应用了“标记-清除”算法，他的运作过程包括四个场景：</p>
+<ol>
+<li>初始标记(CMS initial mark)</li>
+<li>并发标记(CMS concurrent mark)</li>
+<li>重新标记(CMS ermark)</li>
+<li>并发清除(CMS concurrent sweep)</li>
+</ol>
+<p>由于在整个过程中耗时最长的并发标记与并发清除过程收集器线程可与用户线程一起工作，因而，可看做并发标记与并发清除的收集器线程是与用户线程一起并发执行的，其运行过程如下图所示：<br>
+<img src="/img/2018-07/jvm_GC_CMS.png" alt=""><br>
+CMS是一款优秀的收集器，他的主要优点有：并发收集，低停顿，因而也称为并发低停顿收集器，但其仍有缺点，主要表现在三个方面：</p>
+<ol>
+<li>CMS收集器对CPU资源非常敏感。面向并发设计的程序都对CPU比较敏感，在并发阶段，它会占用一部分线程导致应用程序变慢，降低总吞吐量。CMS默认自动回收线程数为(cpu数+3)/4，故当cpu总数小于4 时，几乎要拿出50%的资源执行线程收集器。增量式并发收集器(i-CMS)就是为解决这种情况而创造的，他的思想是：并发标记和并发清理时，让GC线程、用户线程交替运行，尽量减少GC独占资源时间，虽然使得垃圾回收时间变长，但降低了对用户程序的影响。目前，i-CMS已经不再提倡用户使用。</li>
+<li>CMS收集器无法处理浮动垃圾。当出现“Concurrent Mode Failure”导致另一次Full GC的产生。此时，CMS并发清理阶段用户线程还在运行着，无法集中处理运行程序产生的垃圾。由于垃圾收集阶段用户线程还在运行，需给线程预留内存，要是预留的内存无法满足需求，就会出现“Concurrent Mode Failure”失败，此时，临时启用Serial Old进行老年代垃圾回收，耗费时间过长。</li>
+<li>CMS算法是基于“标记-清除”的收集器，收集借书产生大量的空间碎片，当无法找到足够的连续空间存放对象就会触动Full GC。未解决这个问题，CMS增加一个碎片整理时间，此过程无法并发，停顿时间变长。</li>
+</ol>
+<h3 id="g1收集器">G1收集器</h3>
+<p>G1收集器与CMS相比有两点改进：一是G1是基于“标记-整理”的收集器，不会产生空间碎片。二是他可以精确地控制停顿，能让使用者指定在一个时间片段内消耗在垃圾收集上的时间。G1可以在不牺牲吞吐量的前提下完成低停顿 内存回收。G1将java堆划分为多个大小独立的区域，并根据区域的垃圾堆积程度，维护一个优先列表，每次根据收集时间，优先回收垃圾最多的区域，保证来G1收集器在有效时间内的的回收效率。</p>
+<p>注：垃圾收集器参数汇总</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UseSerialGC</td>
+<td>虚拟机运行在Client模式下的默认值，打开此开关，使用Serial+Serial Old收集器组合进行内存回收</td>
+</tr>
+<tr>
+<td>UseParNewGC</td>
+<td>打开此开关后，使用ParNew+Serial Old的收集器组合进行内存回收</td>
+</tr>
+<tr>
+<td>UseConcMarkSweepGC</td>
+<td>打开此开关后，使用ParNew+CMS+Serial Old的收集器组合进行内存回收。Serial Old收集器将作为CMS收集器出现Concurrent Mode Failure失败后的后备收集器使用</td>
+</tr>
+<tr>
+<td>UseParallelGC</td>
+<td>虚拟机运行在Server模式下的默认值，打开此开关后，使用Parallel Scavenge + Serial Old（PS MarkSweep）的收集器组合进行内存回收</td>
+</tr>
+<tr>
+<td>UseParallelOldGC</td>
+<td>打开此开关后，使用Parallel Scavenge + Parallel Old的收集器组合进行内存回收</td>
+</tr>
+<tr>
+<td>SurvivorRatio</td>
+<td>新生代中Eden区域与Survivor区域的容量比值，默认值为8，代表Eden：Survivor=8：1</td>
+</tr>
+<tr>
+<td>PretenureSizeThreshold</td>
+<td>直接晋升到老年代的对象大小，设置这个参数后，大于这个参数的对象将直接在老年代分配</td>
+</tr>
+<tr>
+<td>MaxTenuringThreshold</td>
+<td>晋升到老年代的对象年龄，每个对象在坚持过一次Minor GC之后，年龄就增加1，当超过这个参数时就进入老年代</td>
+</tr>
+<tr>
+<td>UseAdaptiveSizePolicy</td>
+<td>动态调整Java堆中各个区域的大小以及进入老年代的年龄</td>
+</tr>
+<tr>
+<td>HandlePromotionFailure</td>
+<td>是否允许分配担保失败，即老年代的剩余空间不足以应付新生代的整个Eden和Survivor区的所有对象都存活的极端情况</td>
+</tr>
+<tr>
+<td>ParallelGCThreads</td>
+<td>设置并行GC时进行内存回收的线程数</td>
+</tr>
+<tr>
+<td>GCTimeRatio</td>
+<td>GC时间占总时间的比率，默认值为99，即允许1%的GC时间。仅在使用Parallel Scavenge收集器时生效</td>
+</tr>
+<tr>
+<td>MaxGCPauseMillis</td>
+<td>设置GC的最大停顿时间，仅在使用Parallel Scavenge收集器时生效</td>
+</tr>
+<tr>
+<td>CMSInitingOccupancyFraction</td>
+<td>设置CMS收集器在老年代空间被使用多少后触发垃圾收集。默认值为68%，仅在使用CMS收集器时生效</td>
+</tr>
+<tr>
+<td>UseCMSCompactAtFullCollection</td>
+<td>设置CMS收集器在完成垃圾收集后是否要进行一次内存碎片整理，仅在使用CMS收集器时生效</td>
+</tr>
+<tr>
+<td>CMSFullGCsBeforeCompaction</td>
+<td>设置CMS收集器在进行若干次垃圾收集后再启动一次内存碎片整理。仅在使用CMS收集器时生效</td>
+</tr>
+</tbody>
+</table>
+<p>本文主要参考自《深入理解Java虚拟机——JVM高级特性与最佳实践》一书<br>
+另部分图片参考文章：<br>
+<a href="https://blog.csdn.net/u011116672/article/details/50994105" target="_blank" rel="noopener">https://blog.csdn.net/u011116672/article/details/50994105</a></p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/Mybatis/Mybatis(一)之JDBC流程/" data-toggle="tooltip" data-placement="top" title="Mybatis(一)之JDBC流程">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/JVM/JVM之生命周期/" data-toggle="tooltip" data-placement="top" title="JVM之生命周期">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#JVM" title="JVM">JVM</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/liuyi6">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 刘艺 2019 
+                    <br>
+                    Theme by <a href="https://www.huweihuang.com/">胡伟煌</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a href="http://liuyi6.github.io">刘艺</a> 
+					<!--
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=huweihuang&repo=hexo-theme-huweihuang&type=star&count=true" >
+                    </iframe>
+					-->
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.liuyi6.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.liuyi6.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

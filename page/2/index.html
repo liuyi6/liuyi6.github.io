@@ -400,6 +400,101 @@ JDBC（Java DataBase Connectivity，java数据库连接）是一种用于执行S
 
 <div class="post-preview">
 
+    <a href="/JVM/JVM之垃圾回收机制/">
+        <h2 class="post-title">
+                                 
+            JVM之垃圾回收机制
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            前言
+很多人将垃圾收集(Garbage Collection)视为Java的伴生产物，实际1960年诞生的Lisp是第一门真正使用内存动态分配与垃圾手机技术的语言。在目前看来，内存的动态分配与内存回收已经相当成熟，但了解GC与内存分配还是非常有必要的，当排查内存溢出、内存泄漏问题，当垃圾手机称为系统高并发的瓶颈时，就需要我们对其实施必要的监控与调节。
+在前面的篇章中我们了解到Java的运行时......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by 刘艺 on
+            2018-09-23
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#JVM" title="JVM">JVM</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/JVM/JVM之生命周期/">
+        <h2 class="post-title">
+                                 
+            JVM之生命周期
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            转载自：https://www.cnblogs.com/like-minded/p/5157667.html
+一个运行时的Java虚拟机实例的天职是：负责运行一个java程序。当启动一个Java程序时，一个虚拟机实例也就诞生了。当该程序关闭退出，这个虚拟机实例也就随之消亡。如果同一台计算机上同时运行三个Java程序，将得到三个Java虚拟机实例。每个Java程序都运行于它自己的Java虚拟机......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by 刘艺 on
+            2018-09-23
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#JVM" title="JVM">JVM</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/JVM/JVM之内存区域/">
+        <h2 class="post-title">
+                                 
+            JVM之内存区域
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Java虚拟机运行时数据区分为以下几个部分：
+方法区、虚拟机栈、本地方法栈、堆、程序计数器。如下图所示：
+
+程序计数器
+
+程序计数器可看作当前线程所执行的字节码行号指示器，字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令。Java虚拟机的多线程是通过线程轮流切换以分配处理执行时间的方式进行的，因而为了确保线程切换后能够恢复到正确的执行位置，每条线程都有一个独立的程......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by 刘艺 on
+            2018-09-22
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#JVM" title="JVM">JVM</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/设计模式/设计模式之外观模式/">
         <h2 class="post-title">
                                  
@@ -418,106 +513,6 @@ JDBC（Java DataBase Connectivity，java数据库连接）是一种用于执行S
         <p class="post-meta" style="margin: 10px 0;">
             Posted by 刘艺 on
             2018-08-15
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#设计模式" title="设计模式">设计模式</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/设计模式/设计模式之单例模式/">
-        <h2 class="post-title">
-                                 
-            设计模式之单例模式
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            在实际的项目开发中，常会用到配置文件，可在读取配置文件后将读取的内容放在数据对象中，但在使用时通过new的方式产生对象，在系统中会存在多个相同的配置文件，当配置文件过多时会极大的影响到系统的性能。我们是否能使得配置文件的实例对象在系统运行期间只有一个，以避免了上述问题的发生，这就是我们今天说的单例模式。
-一、单例模式实现
-单例模式也称单件、单体等，单例模式保证一个类只有一个实例，并提供一个全......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by 刘艺 on
-            2018-08-15
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#设计模式" title="设计模式">设计模式</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/设计模式/设计模式之适配器模式/">
-        <h2 class="post-title">
-                                 
-            设计模式之适配器模式
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            前言
-小六新买了一个小米6手机，它高高兴兴的拿到新手机，想要插上耳机听歌，但发现手机没有耳机孔，仔细查看说明书之后发现，小米6手机是充电孔耳机孔在一起，在插耳机时需要一个耳机转接器，才能插耳机。我们用程序员的眼观来看，这里相当于增加了一个转接器类用于适配耳机，这就类似于我们今天提到的设计模式—适配器模式。
-一、适配器模式实现
-适配器模式的类图如下所示：
-
-其中：
-
-Client：客户端，调用......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by 刘艺 on
-            2018-08-13
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#设计模式" title="设计模式">设计模式</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/设计模式/设计模式之简单工厂模式/">
-        <h2 class="post-title">
-                                 
-            设计模式之简单工厂模式
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            简单工厂模式又叫做静态工厂方法模式，但不属于23种GOF设计模式，由于它太常用，因而将其放在首位，与后续的设计模式学习节奏保持一致。
-一、模式实现
-简单工厂将new对象的职责迁移到工厂中进行，通过传递的参数，在工厂中创建不同的实例化对象。下面通过具体的代码示例进行说明。
-**问题：**某公司有一种产品，现有AB两种生产方式，现要求对其创建逻辑进行实现，并将具体的创建产品逻辑进行隔离。
-现考虑......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by 刘艺 on
-            2018-08-12
         </p>
         <div class="tags">
             
@@ -583,6 +578,10 @@ Client：客户端，调用......
         
             
             <a href="/tags/#设计模式" title="设计模式" rel="6">设计模式</a>
+            
+        
+            
+            <a href="/tags/#JVM" title="JVM" rel="3">JVM</a>
             
         
     </div>
@@ -665,7 +664,7 @@ Client：客户端，调用......
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">1</span></li></ul>
     </div>
 
         <hr>
