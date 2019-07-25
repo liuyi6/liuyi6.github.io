@@ -221,22 +221,22 @@
 <hr>
 <p><strong>思路1：继承</strong><br>
 在Duck父方法中加入fly()方法，简单快捷的实现鸭子的飞行</p>
-<img src="/img/2018-7-31/strategy_change.png" width="500" height="300">
+<img src="/img/2018-07/strategy_change.png" width="500" height="300">
 存在问题：
 若加入塑料橡皮鸭，木头诱饵鸭，继承Duck类之后，会出现橡皮鸭、诱饵鸭飞行的闹剧，因而在父类中加入fly()方法的思路不可行。
-**思路2：改进继承**
-![改进的继承](/img/2018-7-31/strategy_consider.png)
-Flyable与Quackable虽然解决了一些问题，但却造成代码无法复用，若有上百个鸭子类，每个都要修改飞行类，这简直就是一个噩梦。因而，我们要考虑其他的实现思路.
-**思路3：策略模式实现**
-接下来我们就用策略模式的方式实现SimDuck的需求。
-由上面分析可知，鸭子的quack()行为有“呱呱”、“吱吱”...... fly()行为有能自己飞的、不能飞的、依靠外力飞的...... 因而选择将这些不同的部分拿出来，建一组新类代表每个行为。
-![拿出不同](/img/2018-7-31/strategy_devidchange.png)
-在设计这些行为类的过程中，我们想要鸭子的行为可以动态的改变，并得到指定行为的鸭子实例。因而我们选择使用接口的方式构建鸭子行为，类图如下所示：
-![设置接口](/img/2018-7-31/strategy_designInterface.png)
-这样的设计，可以让飞行与和呱呱叫的动作被其他对象复用，同时可以在新增行为的过程中，不会影响到既有的行为类，这样就有了继承的“复用”好处，却又没有继承带来的麻烦。
-整合鸭子的行为
-在Duck类中“加入两个实力变量”，分别为flyBehavior和quackBehavior,声明为接口类型，每个鸭子对象都会动态的设置变量以在运行时引用正确的行为类型。
-Dack类代码如下所示：
+<p><strong>思路2：改进继承</strong><br>
+<img src="/img/2018-07/strategy_consider.png" alt="改进的继承"><br>
+Flyable与Quackable虽然解决了一些问题，但却造成代码无法复用，若有上百个鸭子类，每个都要修改飞行类，这简直就是一个噩梦。因而，我们要考虑其他的实现思路.<br>
+<strong>思路3：策略模式实现</strong><br>
+接下来我们就用策略模式的方式实现SimDuck的需求。<br>
+由上面分析可知，鸭子的quack()行为有“呱呱”、“吱吱”… fly()行为有能自己飞的、不能飞的、依靠外力飞的… 因而选择将这些不同的部分拿出来，建一组新类代表每个行为。<br>
+<img src="/img/2018-07/strategy_devidchange.png" alt="拿出不同"><br>
+在设计这些行为类的过程中，我们想要鸭子的行为可以动态的改变，并得到指定行为的鸭子实例。因而我们选择使用接口的方式构建鸭子行为，类图如下所示：<br>
+<img src="/img/2018-07/strategy_designInterface.png" alt="设置接口"><br>
+这样的设计，可以让飞行与和呱呱叫的动作被其他对象复用，同时可以在新增行为的过程中，不会影响到既有的行为类，这样就有了继承的“复用”好处，却又没有继承带来的麻烦。<br>
+整合鸭子的行为<br>
+在Duck类中“加入两个实力变量”，分别为flyBehavior和quackBehavior,声明为接口类型，每个鸭子对象都会动态的设置变量以在运行时引用正确的行为类型。<br>
+Dack类代码如下所示：</p>
 <pre><code>public class Duck {
     QuackBehavior quackBehavior;
     FlyBehavior flyBehavior;
@@ -337,7 +337,7 @@ public class Squeak implents quackBehavior{
 }
 </code></pre>
 <p>至此，我们已经完成了鸭子模拟器的设计，我们看一下整体的类结构，如下图所示：<br>
-<img src="/img/2018-7-31/strategy_starge.png" alt="最终结果"></p>
+<img src="/img/2018-07/strategy_starge.png" alt="最终结果"></p>
 <p><strong>策略模式定义了算法族，各个算法族分别封装起来，每个算法族内的类可以相互替换，使得算法的变化独立于算法使用者。</strong><br>
 设计原则</p>
 <hr>
