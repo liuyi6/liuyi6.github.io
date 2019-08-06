@@ -1,5 +1,0 @@
----
-title: categories
-date: 2018-07-27 23:05:10
-type: "categories"
----
