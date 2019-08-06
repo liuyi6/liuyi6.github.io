@@ -1,0 +1,500 @@
+---
+title: Spring(四)之基于纯注解方式的使用
+date: 2019-01-03 21:48:19
+tags: [Spring]
+categories: Spring
+---
+经过上篇xml与注解混合方式，对注解有了简单额了解，上篇的配置方式极大地简化了xml中配置，但仍有部分配置在xml中进行，接下来我们就通过注解的方式将xml中的配置用注解的方式实现，并最终去掉xml配置。
+
+## xml中遗留配置
+
+**注解扫描**
+
+```xml
+<!-- 开启注解并扫描指定包中带有注解的类 -->
+<context:component-scan base-package="com.kkb.spring.service"/>
+```
+
+**非自定义bean**，如sqlsessionFactory
+
+```xml
+<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" value="dataSource"></property>
+</bean>
+```
+
+下面将用注解的方式进行替代。
+
+## 组件注册
+
+首先是@Configuration注解，被其修饰的类可看做xml配置文件，通过此类进行组件注册。而上下文容器可通过下面方式进行创建：
+
+```java
+ApplicationContext context = new    AnnotationConfigApplicationContext(SpringConfiguration.class);
+```
+
+其中，SpringConfiguration是被@Configuration修饰的配置类。
+
+### @Bean注解
+
+@Bean是Spring提供的注解，它在配置类中使用，可以将Java类交给Spring进行管理，@Bean有如下特征：
+
+* 默认时，以@Bean修饰的bean对象对应的关键字是【方法名】
+* 如果在@Bean指定bean对象对应关键@Bean(value={"stu1","stu2"})，此时bean对象在Spring容器对应关键字就不是【方法名】，是stu1或则stu2
+* 所有通过@Bean修饰生成的bean对象默认的情况下都是单例。
+* 对于单例的bean对象，可以通过@Lazy延缓变对象被创建时机。
+
+```java
+@Configuration//相当于配置文件
+public class ApplicationConfig {
+    
+    @Bean(value={"stu1"})
+	public Student student2(){
+		return new Student();
+	}
+    
+    //这个注解专用于单例模式bean对象，此时bean对象不会在,spring容器启动时被创建的，只有在一个用户来访时才会被创建
+    @Lazy
+    @Bean
+    public Teacher teacher(){
+    	return new Teacher();
+    }
+}
+```
+
+### @ComponentScan注解
+
+@ComponentScan是Spring中的注解，在配置类中使用，用于配置扫描的类，它可以将某些类排除在Spring容器之外，也可以将某些类添加到Spring容器之内 。相当于**context:component-scan标签**
+
+```java
+@ComponentScan(value="com.kkb.beans")
+@Configuration//相当于配置文件
+public class ApplicationConfig {}
+```
+
+可以在@ComponentScan中配置FilterType进行扫描文件的过滤，FilterType提供五种扫描策略：
+
+* ANNOTATION 根据注解进行过滤(@Controller,@Service,@Resposity,@Compoent)
+* ASSIGNABLE_TYPE 根据指定类型
+* ASPECTJ表达式过滤
+* REGEX根据正则表达式过滤
+* CUSTOM,根据开发人员自行定义过滤规则
+
+#### 将指定类添加到Spring容器中
+
+将指定的类添加Spring容器使用**includeFilters**
+
+```java
+@ComponentScan(value="com.luis.beans",useDefaultFilters=false,
+             includeFilters={
+            		  @Filter(type=FilterType.ANNOTATION,
+            				   value={Controller.class,Service.class}),
+            		   
+            		  @Filter(type=FilterType.ASSIGNABLE_TYPE,
+            		          value={DeptDao.class})  	   
+               })
+@Configuration//相当于配置文件
+public class ApplicationConfig {
+
+}
+```
+
+上面的代码采用了1,2两个策略将指定类添加到Spring容器中。
+
+自定义扫描规则的配置如下：
+
+```java
+在@ComponentScan(value="包路径",
+              excludeFilters={
+                        @Filter(type=FilterType.CUSTOM,value=自定义过滤规则类.class)
+              })
+@Configuration//相当于配置文件
+public class ApplicationConfig {
+
+}
+```
+
+此外还需配置过滤规则类。
+
+#### 将指定类排除Spring容器外
+
+将指定类排除Spring容器外使用**excludeFilters**
+
+```java
+@ComponentScan(value="com.luis.beans",
+               excludeFilters={
+            		   @Filter(type=FilterType.ANNOTATION,
+            				   value={Controller.class,Service.class})  
+               })
+@Configuration//相当于配置文件
+public class ApplicationConfig {
+
+}
+```
+
+### @Conditionnal注解
+
+@Conditionnal是Spring提供的注解，用在配置类中，用于动态决定是否添加进Spring容器中。
+
+现有两个类：Student和Teacher
+
+```java
+//如果当前工程运行在Windows系统下，就注册Student
+public class Student {}
+
+//如果当前工程运行在Linux系统下，就注册Teacher
+public class Teacher {}
+```
+
+定义两个判断类：LinuxCondition和WindowsCondition
+
+```java
+public class LinuxCondition implements Condition {
+	/*
+	 * ConditionContext context:spring容器上下文环境
+	 * AnnotatedTypeMetadata metadata ：@Conditional修饰类型信息
+	 */
+	public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+		  String systemName = context.getEnvironment().getProperty("os.name");
+		  if(systemName.contains("Linux")){
+			  return true;
+		  }
+		  return false;
+	}
+}
+```
+
+```java
+public class WindowsCondition implements Condition {
+	
+	public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) { 
+		   String systemName = context.getEnvironment().getProperty("os.name");
+		   if(systemName.contains("Windows")){
+			   return true;
+		   }
+		return false;
+	}
+}
+```
+
+配置类代码：
+
+```java
+@Configuration//相当于配置文件
+public class ApplicationConfig {
+
+	@Conditional({LinuxCondition.class})
+	@Bean
+	public Teacher teacher(){
+		return new Teacher();
+	}
+	
+	@Conditional({WindowsCondition.class})
+	@Bean
+	public Student student(){
+		return new Student();
+	}
+}
+```
+
+### @Import注解
+
+用来组合多个配置类， 相当于spring配置文件中的import标签，在引入其他配置类时，可以不用再写@Configuration 注解。也可以指定将指定bean导到SpringIOC容器中
+
+```java
+@import(value="com.luis.Student")
+@Configuration//相当于配置文件
+public class ApplicationConfig {
+
+}
+```
+
+此外，可通过自定义的选择器将bean添加到IOC容器中。
+
+```java
+public class MyImportSelector implements ImportSelector {
+
+	public String[] selectImports(AnnotationMetadata importingClassMetadata) {
+		String classNames[]={"com.luis.Student"};
+		return classNames;
+	}
+}
+```
+
+```java
+public class MyImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
+
+	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+		//1.将Java类注册到Spring
+		BeanDefinitionBuilder builer  = BeanDefinitionBuilder.genericBeanDefinition(Teacher.class);
+		//2.创建当前Java类的实例对象
+		BeanDefinition obj= builer.getBeanDefinition();
+		
+		//3.通过Spring的bean注册器，将当前Java类的实例对象添加到Spring容器
+		registry.registerBeanDefinition("luis", obj);
+	}
+}
+```
+
+配置类代码如下：
+
+```java
+@Import(value={MyImportSelector.class,MyImportBeanDefinitionRegistrar.class})
+@Configuration//相当于配置文件
+public class ApplicationConfig {
+    //两种添加方式
+}
+```
+
+### FactoryBean接口
+
+**FactoryBean**是Spring容器提供的一种注册bean的方式，通过它来获得组件的bean的对象以及bean对象的单例或则多例的形态。
+
+```java
+public class MyFactoryBean implements FactoryBean<Student> {
+
+	//通知Spring容器，当前Student类的实例对象创建方式
+	public Student getObject() throws Exception {
+		return new Student();
+	}
+
+	//通知Spring容器，被管理的bean对象在spring容易对应的类型
+	public Class<?> getObjectType() {
+		return Student.class;
+	}
+
+	/*
+	 *   true 单例
+	 *   false prototype
+	 * */
+	public boolean isSingleton() {
+		return true;
+	}
+}
+```
+
+配置类代码如下：
+
+```java
+@Configuration//相当于配置文件
+public class ApplicationConfig {
+    @Bean
+	 public FactoryBean factoryBean(){
+		 return new MyFactoryBean();
+	 }
+}
+```
+
+### @PropertySource注解
+
+写在配置类中，用于 加载properties配置文件，相当于`context:property-placeholder`标签
+
+properties文件：
+
+```properties
+jdbc.driver=com.mysql.jdbc.Driver 
+jdbc.url=jdbc:mysql:///spring
+jdbc.username=root 
+jdbc.password=root
+```
+
+配置类：
+
+```java
+@Configuration
+@PropertySource("classpath:jdbc.properties")
+public class JdbcConfig {
+	@Value("${jdbc.driver}")
+	private String driver;
+	@Value("${jdbc.url}")
+	private String url;
+	@Value("${jdbc.username}")
+	private String username;
+	@Value("${jdbc.password}")
+	private String password;
+
+	/**
+	 * 创建一个数据源，并存入 spring 容器中
+	 */
+	@Bean(name = "dataSource")
+	public DataSource createDataSource() {
+		try {
+			ComboPooledDataSource ds = new ComboPooledDataSource();
+			ds.setDriverClass(driver);
+			ds.setJdbcUrl(url);
+			ds.setUser(username);
+			ds.setPassword(password);
+			return ds;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+}
+```
+
+## bean对象赋值
+
+### @Value注解
+
+@Value可在当前类中指定属性上赋值，其有以下几种用法：
+
+```java
+public class Student {
+
+	@Value("luis")//使用基本数据为属性赋值
+	private String sname;
+	@Value("#{28-2}")//使用SPEL为属性赋值
+	private int age;
+	@Value("${student.home}")//读取来自于外部的properties属性文件内容
+	private String home;
+}
+```
+
+### BeanPostProcessor
+
+为所有的类的指定属性赋值BeanPostProcessor(后置处理器)，BeanPostProcessor接口的自定义直接实现类可以在当前Spring容器的 所有bean对象初始化前后被调用。
+
+ BeanPostProcessor是一个接口，主要用于在bean对象初始化前后，做一些辅助功能
+
+其中，**postProcessBeforeInitialization:bean**被初始化之前工作，**postProcessAfterInitialization:**被初始化之后工作
+
+```java
+@Component
+public class MyBeanPostProcessor implements BeanPostProcessor {
+
+	//在bean对象初始化之前被调用 bean是Spring容器管理一个对象，beanName就是当前对象在Spring容器关联关键字
+	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+		
+		if(bean.getClass()==Dog.class){
+		  try{
+			  Field field =	bean.getClass().getDeclaredField("age");
+			  field.setAccessible(true);
+			  field.set(bean, 15);
+		  }catch(Exception ex){
+			  ex.printStackTrace();
+		  }
+		}else if(bean.getClass()==Bird.class){
+			 try{
+				  Field field =	bean.getClass().getDeclaredField("age");
+				  field.setAccessible(true);
+				  field.set(bean, 9);
+			  }catch(Exception ex){
+				  ex.printStackTrace();
+			  }
+		}
+		return bean;
+	}
+
+	//在bean对象初始化之后被调用 bean是Spring容器管理一个对象，beanName就是当前对象在Spring容器关联关键字
+	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+		return bean;
+	}	
+}
+```
+
+配置类:
+
+```java
+@ComponentScan(value={"com.luis.beans"})
+@Configuration//相当于配置文件
+public class ApplicationConfig {}
+```
+
+BeanPostProcessor的原理是：遍历Spring容器中所有的BeanPostProcessor,执行每一个BeanPostProcessor中的 postProcessBeforeInitialization方法，如果某一次执行返回null.则立刻结束执行。
+
+## Bean的生命周期
+
+### @Bean注解处理Bean
+
+可以在类文件中定义初始化或销毁方法，通过@Bean注解进行方法的指定。
+
+```java
+public class Student{
+    public void init() {
+		System.out.println("对象被创建");
+	}
+
+	public void destory() {
+		System.out.println("对象被回收");
+	}
+}
+```
+
+```java
+@Configuration//相当于配置文件
+public class ApplicationConfig {
+     @Bean(initMethod="init",destoryMethod="destory")
+    public Student student(){
+    	return new Student();
+    }
+}
+```
+
+### InitializingBean&DisposableBean
+
+我们可以让类文件同时实现InitializingBean接口与DisposableBean接口，根据这两个接口提供的监听方法来监听当前类的bean的实例化时机和销毁时机。
+
+```java
+public class Student implements InitializingBean, DisposableBean {
+
+	public Student() {
+		System.out.println("Student构造方法被调用");
+	}
+
+	public void destroy() throws Exception {
+		System.out.println("Student对象被销毁");
+	}
+
+	public void afterPropertiesSet() throws Exception {
+		System.out.println("Student对象被初始化");
+	}
+}
+```
+
+### @PreDestroy& @PostConstruct
+
+可以在类中指定方法上添加这两个注解,来指定监听bean对象被实例化和销毁的时机。这两个注解不是由Spring提供的。
+
+```java
+public class Student{
+
+	public Student() {
+		System.out.println("Student构造方法被调用");
+	}
+	
+	@PreDestroy
+	public void destroy() throws Exception {
+		System.out.println("Student对象被销毁");
+	}
+
+	@PostConstruct
+	public void afterPropertiesSet() throws Exception {
+		System.out.println("Student对象被初始化");
+	}
+}
+```
+
+## Junit的使用
+
+在进行单元测试的过程中，每个方法都需要创建上下文容器，他们是不可或缺的，但又与我们的只写业务代码的理念相违背，不过好在Junit 给我们暴露了一个注解（**@RunWith**），可以让我们替换掉它的运行器。这时，我们需要依靠 spring 框架，因为它提供了一个运行器，可以读取配置文件（或注解）来创建容器，使用时只要指出配置文件的位置。其步骤如下：
+
+* 添加依赖包：spring-test
+* 通过@RunWith注解，指定spring的运行器，Spring的运行器为：SpringJunit4ClassRunner
+* 过@ContextConfiguration注解，指定spring运行器需要的配置文件路径
+* 通过@Autowired注解给测试类中的变量注入数据
+
+示例代码如下：
+
+```java
+@RunWith(SpringJunit4ClassRunner.class)
+@ContextConfiguration(locations="classpath:applicationContext.xml")
+public calss TestStudentService{
+    @Autowired
+    private StudentMapper studentMapper;
+    
+    @Test
+    public void getStudent(){
+        studentMapper.getStudent();
+    }
+}
+```
